@@ -1,2 +1,6 @@
 # lexer
-lever
+lexer
+
+Brandon Lavello
+brandonlavello@csu.fullerton.edu
+
