@@ -1,7 +1,7 @@
-#Lexer
-This program is the lexer stage of a compiler.
+# Lexer
+ This program is the lexer stage of a compiler.
 
-Contributors:
+## Contributors:
 
 Brandon Lavello
 brandonlavello@csu.fullerton.edu
