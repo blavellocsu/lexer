@@ -1,3 +1,7 @@
+//USAGE
+//compile with g++ lexer.cpp -olexer
+//run with ./lexer SampleInputFile1.txt
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -21,7 +25,8 @@ int main( int argc, const char * argv[] ) {
     }
 
   //File handling
-    //read filename in from argument
+    //read filename in from command line argument
+    //see top of file for correct command line usage
     string filename = argv[1];
     char currentChar;
     //Create filesream
@@ -34,6 +39,7 @@ int main( int argc, const char * argv[] ) {
       while (!file.eof()) {
         //read each character into currentChar
         file >> currentChar;
+
         //test output
         cout << currentChar << " ";
 
