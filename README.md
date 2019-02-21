@@ -5,3 +5,6 @@ Contributors:
 
 Brandon Lavello
 brandonlavello@csu.fullerton.edu
+
+Vincent DeAugustine
+vinnied44@csu.fullerton.edu
