@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 //#include <vector>
-//#include <list>
+#include <list>
 using namespace std;
 
 //Global data
@@ -29,6 +29,7 @@ int main( int argc, const char * argv[] ) {
     //see top of file for correct command line usage
     string filename = argv[1];
     char currentChar;
+    list <char> charList;
     //Create filesream
     ifstream file(filename);
     //check to see if file opened correctly
@@ -43,9 +44,7 @@ int main( int argc, const char * argv[] ) {
         //test output
         cout << currentChar << " ";
 
-        //NEXT STEP
-        //add current char to some sort of data structure
-        //possibly queue, list, vector.
+        charList.push_back(currentChar);
       }
 
     } else {
@@ -54,6 +53,6 @@ int main( int argc, const char * argv[] ) {
     }
 
   //Test Print
-  cout << "End Program\n";
+  cout << "\nEnd Program\n";
   return 0;
 } //end main
