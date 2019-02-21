@@ -23,19 +23,23 @@ int main( int argc, const char * argv[] ) {
   //File handling
     //read filename in from argument
     string filename = argv[1];
+    char currentChar;
     //Create filesream
     ifstream file(filename);
     //check to see if file opened correctly
     if (file.is_open()) {
       cout << "File opened successfully." << endl;
+
+      //create while loop to run through txt file
+      while (!file.eof()) {
+        file >> currentChar;
+        cout << currentChar << " ";
+      }
+
     } else {
      cout << "File Error: Could not open file.\n" << usage << endl;
      exit(1);
     }
-
-    //create while loop to run through txt file
-
-
 
   //Test Print
   cout << "End Program\n";
