@@ -6,18 +6,13 @@
 using namespace std;
 
 //Global data
-
 const string keyword[] = { "int", "float", "bool", "if", "else", "then", "do", "while",
                        "whileend", "do", "doend", "for", "and", "or", "function"};
-
 const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", ";", "!"};
-
 const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"};
 
 int main( int argc, const char * argv[] ) {
-
   //check for command line arguments
-
     string usage = "Usage: \"./<name> <filename.txt>\"";
     //check for correct usage: "./lexer sample.txt"
     if (argc != 2) {
@@ -26,7 +21,6 @@ int main( int argc, const char * argv[] ) {
     }
 
   //File handling
-
     //read filename in from argument
     string filename = argv[1];
     //Create filesream
@@ -39,7 +33,7 @@ int main( int argc, const char * argv[] ) {
      exit(1);
     }
 
-  //Continue on...
+    //create while loop to run through txt file
 
 
 
