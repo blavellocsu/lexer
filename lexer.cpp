@@ -32,8 +32,14 @@ int main( int argc, const char * argv[] ) {
 
       //create while loop to run through txt file
       while (!file.eof()) {
+        //read each character into currentChar
         file >> currentChar;
+        //test output
         cout << currentChar << " ";
+
+        //NEXT STEP
+        //add current char to some sort of data structure
+        //possibly queue, list, vector.
       }
 
     } else {
