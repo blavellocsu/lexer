@@ -15,6 +15,9 @@ const string keyword[] = { "int", "float", "bool", "if", "else", "then", "do", "
 const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", ";", "!"};
 const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"};
 
+bool isKeyword();
+bool isOperatior;
+
 int main( int argc, const char * argv[] ) {
   //check for command line arguments
     string usage = "Usage: \"./<name> <filename.txt>\"";
@@ -38,6 +41,7 @@ int main( int argc, const char * argv[] ) {
 
       //create while loop to run through txt file
       while (!file.eof()) {
+
         //read each character into currentChar
         file >> currentChar;
 
@@ -50,6 +54,22 @@ int main( int argc, const char * argv[] ) {
     } else {
      cout << "File Error: Could not open file.\n" << usage << endl;
      exit(1);
+    }
+
+    //Remove Comments from charList
+    for (list<char>::iterator itr = charList.begin();
+     itr != charList.end(); ++itr) {
+      if (*itr == '!') {
+        //cout << *itr;
+        //charList.erase(itr);
+        /*
+        do {
+          charList.erase(itr);
+          itr++;
+        } while (*itr != '!');
+        */
+
+      }
     }
 
   //Test Print
