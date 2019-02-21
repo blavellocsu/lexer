@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-//#include <vector>
+#include <vector>
 #include <list>
 using namespace std;
 
@@ -58,16 +58,18 @@ int main( int argc, const char * argv[] ) {
 
     //Remove Comments from charList
     for (list<char>::iterator itr = charList.begin();
-     itr != charList.end(); ++itr) {
+     itr != charList.end(); advance(itr,1)) {
+      //cout << *itr;
       if (*itr == '!') {
         //cout << *itr;
-        //charList.erase(itr);
-        /*
-        do {
-          charList.erase(itr);
-          itr++;
-        } while (*itr != '!');
-        */
+        //do {
+          //itr = charList.erase(itr);
+          //itr--;
+          // while (*itr != '!') {
+          //   itr = charList.erase(itr);
+          //   itr--;
+          // }
+        //} while (*itr != '!');
 
       }
     }
