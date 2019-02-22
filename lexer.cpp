@@ -17,6 +17,8 @@ const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"};
 
 bool isKeyword();
 bool isOperatior;
+void removeComments(list<char> *l);
+void testPrint(list<char> *l);
 
 int main( int argc, const char * argv[] ) {
   //check for command line arguments
@@ -55,32 +57,36 @@ int main( int argc, const char * argv[] ) {
      cout << "File Error: Could not open file.\n" << usage << endl;
      exit(1);
     }
-
-cout << "\n\n\n";
-    //Remove Comments from charList
-    //iterate through list
-    for (list<char>::iterator itr = charList.begin();
-     itr != charList.end(); advance(itr,1)) {
-      //check if current char is equal to '!'
-      if (*itr == '!') {
-        //delete until find next '!'
-        do {
-          //charList.erase returns next element
-          //set itr = to list.erase
-          itr = charList.erase(itr++);
-        } while (*itr != '!');
-        //jumps out of do loop at last '!', so delete last one
-        itr = charList.erase(itr++);
-      }//end if '!'
-    }//end for
-
-
-    //Print Function
-    for (list<char>::iterator itr = charList.begin(); itr != charList.end(); ++itr) {
-      std::cout << ' ' << *itr;
-    }
-
+    removeComments(&charList);
+    cout << "\n\n";
+    testPrint(&charList);
   //Test Print
   cout << "\nEnd Program\n";
   return 0;
 } //end main
+
+void removeComments(list<char> *l) {
+  //Remove Comments from charList
+  //iterate through list
+  for (list<char>::iterator itr = l->begin();
+   itr != l->end(); advance(itr,1)) {
+    //check if current char is equal to '!'
+    if (*itr == '!') {
+      //delete until find next '!'
+      do {
+        //charList.erase returns next element
+        //set itr = to list.erase
+        itr = l->erase(itr++);
+      } while (*itr != '!');
+      //jumps out of do loop at last '!', so delete last one
+      itr = l->erase(itr++);
+    }//end if '!'
+  }//end for
+}//end function
+
+void testPrint (list<char> *l) {
+  //Print Function
+  for (list<char>::iterator itr = l->begin(); itr != l->end(); ++itr) {
+    std::cout << ' ' << *itr;
+  }
+}
