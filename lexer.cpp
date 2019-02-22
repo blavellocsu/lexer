@@ -16,7 +16,7 @@ const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", "
 const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"};
 
 bool isKeyword();
-bool isOperatior;
+bool isOperator();
 void removeComments(list<char> *l);
 void testPrint(list<char> *l);
 
