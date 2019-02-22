@@ -56,22 +56,28 @@ int main( int argc, const char * argv[] ) {
      exit(1);
     }
 
+cout << "\n\n\n";
     //Remove Comments from charList
+    //iterate through list
     for (list<char>::iterator itr = charList.begin();
      itr != charList.end(); advance(itr,1)) {
-      //cout << *itr;
+      //check if current char is equal to '!'
       if (*itr == '!') {
-        //cout << *itr;
-        //do {
-          //itr = charList.erase(itr);
-          //itr--;
-          // while (*itr != '!') {
-          //   itr = charList.erase(itr);
-          //   itr--;
-          // }
-        //} while (*itr != '!');
+        //delete until find next '!'
+        do {
+          //charList.erase returns next element
+          //set itr = to list.erase
+          itr = charList.erase(itr++);
+        } while (*itr != '!');
+        //jumps out of do loop at last '!', so delete last one
+        itr = charList.erase(itr++);
+      }//end if '!'
+    }//end for
 
-      }
+
+    //Print Function
+    for (list<char>::iterator itr = charList.begin(); itr != charList.end(); ++itr) {
+      std::cout << ' ' << *itr;
     }
 
   //Test Print
