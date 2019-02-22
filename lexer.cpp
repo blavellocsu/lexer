@@ -57,14 +57,25 @@ int main( int argc, const char * argv[] ) {
      cout << "File Error: Could not open file.\n" << usage << endl;
      exit(1);
     }
+
+    //remove comments from code
     removeComments(&charList);
+
+    //spacing
     cout << "\n\n";
+
+    //output to see if comments are gone
     testPrint(&charList);
-  //Test Print
+
+  //Test Print to see if it completed
   cout << "\nEnd Program\n";
+
   return 0;
 } //end main
 
+
+//This function accepts an address to a std::list<char>
+//It iterates through the list and deletes the commented phrases
 void removeComments(list<char> *l) {
   //Remove Comments from charList
   //iterate through list
@@ -84,6 +95,8 @@ void removeComments(list<char> *l) {
   }//end for
 }//end function
 
+//Accepts an address to a std::list<chars>
+//prints out list to console
 void testPrint (list<char> *l) {
   //Print Function
   for (list<char>::iterator itr = l->begin(); itr != l->end(); ++itr) {
