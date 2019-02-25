@@ -35,6 +35,7 @@ vector <char> alphaVector;
 vector <char> sepVector;
 vector <char> opVector;
 vector <char> digitVector;
+vector <string> keywordVector;
 
 
 //==========================================================================================
@@ -162,14 +163,12 @@ bool isIdentifier(string s) {
 
 bool isSeparator (char c) {
     if (c == '\'' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']' || c == ',' ||
-        c == '.' || c == ':' || c == ';' || c == '!' || c == ' ') {
+        c == '.' || c == ':' || c == ';' || c == '!') {
         return true;
     } else {
         return false;
     }
 }
-
-
 
 bool isOperator (char c) {
 
@@ -186,7 +185,7 @@ bool isOperator (char c) {
 void testIdentifyingChars (string * s) {
     for (int i = 0; i < s->length(); i++) {
 
-        if (isalpha(s->at(i))) {
+        if (isalpha(s->at(i)) || s->at(i) == ' ') {
             alphaVector.push_back(s->at(i));
         } if (isdigit(s->at(i))) {
             digitVector.push_back(s->at(i));
