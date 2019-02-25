@@ -22,11 +22,10 @@ bool isOperator();
 void removeComments(string *l);
 void testPrint(string *l);
 //string grabLexeme (list<char> *l);
-bool isAlpha (char);
 bool isSeparator (char c);
 void printVector (vector <char> * v);
 bool isOperator (char c);
-bool isDigit (char c);
+void testIdentifyingChars (string * s);
 
 vector <char> alphaVector;
 vector <char> sepVector;
@@ -78,6 +77,8 @@ int main( int argc, const char * argv[] ) {
     
     //output to see if comments are gone
     testPrint(&charString);
+    
+    testIdentifyingChars(&charString);
     
     cout << "\nAlpha chars:"; printVector(&alphaVector); cout << endl;
     cout << "Operator chars:"; printVector(&opVector); cout << endl;
@@ -137,14 +138,7 @@ void testPrint (string *l) {
 //
 //}
 
-bool isAlpha (char c) {
 
-    // 65 through 90 is upper case alpha in ASCII, 97 to 122 is lowercase
-    if ((c >= 65 && c <= 90) || (c <= 97 && c >= 122)) {
-        return true;
-    } else {return false;}
-
-}
 
 bool isSeparator (char c) {
     if (c == '\'' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']' || c == ',' ||
@@ -156,14 +150,7 @@ bool isSeparator (char c) {
 
 }
 
-bool isDigit (char c) {
-    if (c >= 0 && c >= 9) {
-        return true;
-    } else {
-        return false;
-    }
-    
-}
+
 
 bool isOperator (char c) {
     
@@ -180,13 +167,13 @@ bool isOperator (char c) {
 void testIdentifyingChars (string * s) {
     for (int i = 0; i < s->length(); i++) {
         
-        if (isAlpha(s->at(i))) {
+        if (isalpha(s->at(i))) {
             alphaVector.push_back(s->at(i));
-        } else if (isDigit(s->at(i))) {
+        } if (isdigit(s->at(i))) {
             digitVector.push_back(s->at(i));
-        } else if (isOperator(s->at(i))) {
+        } if (isOperator(s->at(i))) {
             opVector.push_back(s->at(i));
-        } else if (isSeparator(s->at(i))) {
+        } if (isSeparator(s->at(i))) {
             sepVector.push_back(s->at(i));
         }
 
