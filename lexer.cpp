@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 #include <list>
-#define newIterator list<char>::iterator // just to make the code a little easier to read
+#define newIterator vector<char>::iterator // just to make the code a little easier to read
 
 using namespace std;
 
@@ -23,7 +23,18 @@ void removeComments(string *l);
 void testPrint(string *l);
 //string grabLexeme (list<char> *l);
 bool isAlpha (char);
+bool isSeparator (char c);
+void printVector (vector <char> * v);
+bool isOperator (char c);
+bool isDigit (char c);
 
+vector <char> alphaVector;
+vector <char> sepVector;
+vector <char> opVector;
+vector <char> digitVector;
+
+
+//==========================================================================================
 
 int main( int argc, const char * argv[] ) {
     //check for command line arguments
@@ -68,12 +79,18 @@ int main( int argc, const char * argv[] ) {
     //output to see if comments are gone
     testPrint(&charString);
     
+    cout << "\nAlpha chars:"; printVector(&alphaVector); cout << endl;
+    cout << "Operator chars:"; printVector(&opVector); cout << endl;
+    cout << "Seperator chars:"; printVector(&sepVector); cout << endl;
+    cout << "Digit chars:"; printVector(&digitVector); cout << endl;
+    
     //Test Print to see if it completed
     cout << "\nEnd Program\n";
     
     return 0;
 } //end main
 
+//==========================================================================================
 
 //This function accepts an address to a std::list<char>
 //It iterates through the list and deletes the commented phrases
@@ -120,11 +137,70 @@ void testPrint (string *l) {
 //
 //}
 
-//bool isAlpha (char c) {
-//
-//    // 65 through 90 is upper case alpha in ASCII, 97 to 122 is lowercase
-//    if ((c >= 65 && <= 90) || (c <= 97 && >= 122)) {
-//        return true;
-//    } else {return false}
-//
-//}
+bool isAlpha (char c) {
+
+    // 65 through 90 is upper case alpha in ASCII, 97 to 122 is lowercase
+    if ((c >= 65 && c <= 90) || (c <= 97 && c >= 122)) {
+        return true;
+    } else {return false;}
+
+}
+
+bool isSeparator (char c) {
+    if (c == '\'' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']' || c == ',' ||
+        c == '.' || c == ':' || c == ';' || c == '!' || c == ' ') {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+bool isDigit (char c) {
+    if (c >= 0 && c >= 9) {
+        return true;
+    } else {
+        return false;
+    }
+    
+}
+
+bool isOperator (char c) {
+    
+    if (c == '*' || c == '+' || c == '-' || c == '=' || c == '/' || c == '>' || c == '<' || c == '%') {
+        return true;
+    } else {
+        return false;
+    }
+    
+}
+
+
+
+void testIdentifyingChars (string * s) {
+    for (int i = 0; i < s->length(); i++) {
+        
+        if (isAlpha(s->at(i))) {
+            alphaVector.push_back(s->at(i));
+        } else if (isDigit(s->at(i))) {
+            digitVector.push_back(s->at(i));
+        } else if (isOperator(s->at(i))) {
+            opVector.push_back(s->at(i));
+        } else if (isSeparator(s->at(i))) {
+            sepVector.push_back(s->at(i));
+        }
+
+    }
+}
+void printVector (vector <char> * v) {
+    
+    for (newIterator it = v->begin(); it != v->end(); ++it) {
+        
+        cout << " " << *it << " ";
+        
+    }
+    
+}
+
+            
+
