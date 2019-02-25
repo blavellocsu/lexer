@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 #include <list>
+#define newIterator list<char>::iterator // just to make the code a little easier to read
+
 using namespace std;
 
 //Global data
@@ -19,6 +21,9 @@ bool isKeyword();
 bool isOperator();
 void removeComments(list<char> *l);
 void testPrint(list<char> *l);
+//string grabLexeme (list<char> *l);
+bool isAlpha (char);
+
 
 int main( int argc, const char * argv[] ) {
   //check for command line arguments
@@ -40,18 +45,15 @@ int main( int argc, const char * argv[] ) {
     //check to see if file opened correctly
     if (file.is_open()) {
       cout << "File opened successfully." << endl;
+        
+      // read content of txt file (including white spaces) into a string
+        string contents((std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
+        
+        for (int i = 0; i < contents.length(); i++) {
+            charList.push_back(contents[i]);
+        }
 
-      //create while loop to run through txt file
-      while (!file.eof()) {
-
-        //read each character into currentChar
-        file >> currentChar;
-
-        //test output
-        cout << currentChar << " ";
-
-        charList.push_back(currentChar);
-      }
 
     } else {
      cout << "File Error: Could not open file.\n" << usage << endl;
@@ -79,7 +81,7 @@ int main( int argc, const char * argv[] ) {
 void removeComments(list<char> *l) {
   //Remove Comments from charList
   //iterate through list
-  for (list<char>::iterator itr = l->begin();
+  for (newIterator itr = l->begin();
    itr != l->end(); advance(itr,1)) {
     //check if current char is equal to '!'
     if (*itr == '!') {
@@ -99,7 +101,23 @@ void removeComments(list<char> *l) {
 //prints out list to console
 void testPrint (list<char> *l) {
   //Print Function
-  for (list<char>::iterator itr = l->begin(); itr != l->end(); ++itr) {
-    std::cout << ' ' << *itr;
+    
+    cout << "This is the char list: ";
+  for (newIterator itr = l->begin(); itr != l->end(); ++itr) {
+    std::cout /*<< ' '*/ << *itr;
   }
 }
+
+//string grabLexeme (list<char> *l) {
+//    // if it is an alphebetical character
+//
+//}
+
+//bool isAlpha (char c) {
+//
+//    // 65 through 90 is upper case alpha in ASCII, 97 to 122 is lowercase
+//    if ((c >= 65 && <= 90) || (c <= 97 && >= 122)) {
+//        return true;
+//    } else {return false}
+//
+//}
