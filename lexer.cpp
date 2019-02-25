@@ -12,20 +12,24 @@
 using namespace std;
 
 //Global data
-const string keyword[] = { "int", "float", "bool", "if", "else", "then", "do", "while",
-    "whileend", "do", "doend", "for", "and", "or", "function"};
+
+//const string keywordArray[] = { "int", "float", "bool", "if", "else", "then", "do", "while",
+  //  "whileend", "do", "doend", "for", "and", "or", "function"};
+vector<string> keywords;
+
 const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", ";", "!"};
 const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"};
 
-bool isKeyword();
-bool isOperator();
-void removeComments(string *l);
-void testPrint(string *l);
+void removeComments(string *l); //completed
+void testPrint(string *l);  //completed
+void printVector (vector <char> * v); //completed
+
 //string grabLexeme (list<char> *l);
-bool isSeparator (char c);
-void printVector (vector <char> * v);
-bool isOperator (char c);
-void testIdentifyingChars (string * s);
+bool isKeyword(string s);
+bool isIdentifier(string s);
+bool isSeparator (char c); //completed
+bool isOperator (char c); //completed
+void testIdentifyingChars (string * s); //completed
 
 vector <char> alphaVector;
 vector <char> sepVector;
@@ -43,7 +47,23 @@ int main( int argc, const char * argv[] ) {
         cout << "Invalid Arguments.\n" << usage << endl;
         exit(1);
     }
-    
+
+    //initializeKeywordsVector
+    keywords.push_back("int");
+    keywords.push_back("float");
+    keywords.push_back("bool");
+    keywords.push_back("if");
+    keywords.push_back("else");
+    keywords.push_back("then");
+    keywords.push_back("do");
+    keywords.push_back("while");
+    keywords.push_back("whileend");
+    keywords.push_back("doend");
+    keywords.push_back("for");
+    keywords.push_back("and");
+    keywords.push_back("or");
+    keywords.push_back("function");
+
     //File handling
     //read filename in from command line argument
     //see top of file for correct command line usage
@@ -55,39 +75,40 @@ int main( int argc, const char * argv[] ) {
     //check to see if file opened correctly
     if (file.is_open()) {
         cout << "File opened successfully." << endl;
-        
+
         // read content of txt file (including white spaces) into a string
         string contents((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-        
+
+
         for (int i = 0; i < contents.length(); i++) {
             charString.push_back(contents[i]);
-        }
-        
-        
+          }
+
+
     } else {
         cout << "File Error: Could not open file.\n" << usage << endl;
         exit(1);
     }
-    
+
     //remove comments from code
     removeComments(&charString);
-    
+
     //spacing
-    cout << "\n\n";
-    
+    //cout << "\n\n";
+
     //output to see if comments are gone
-    testPrint(&charString);
-    
+    //testPrint(&charString);
+
     testIdentifyingChars(&charString);
-    
+
     cout << "\nAlpha chars:"; printVector(&alphaVector); cout << endl;
     cout << "Operator chars:"; printVector(&opVector); cout << endl;
     cout << "Seperator chars:"; printVector(&sepVector); cout << endl;
     cout << "Digit chars:"; printVector(&digitVector); cout << endl;
-    
+
     //Test Print to see if it completed
     cout << "\nEnd Program\n";
-    
+
     return 0;
 } //end main
 
@@ -113,32 +134,31 @@ void removeComments(string *l) {
             }
             // if we got here, that means we found the next !
             int whereCommEnd = j;
-            
+
             // now we erase the substring between our two markers
             l->erase(whereCommStart, whereCommEnd-whereCommStart+1);
             len = l->length();
         }//end if '!'
-        
+
     }//end for
 }//end function
-
-//Accepts an address to a std::list<chars>
-//prints out list to console
-void testPrint (string *l) {
-    //Print Function
-    
-    cout << "This is the char list: ";
-    for (int i = 0; i < l->length(); i++) {
-        std::cout /*<< ' '*/ << l->at(i);
-    }
-}
 
 //string grabLexeme (list<char> *l) {
 //    // if it is an alphebetical character
 //
 //}
 
+bool isKeyword(string s) {
+  for (vector<string>::iterator it = keywords.begin(); it != keywords.end(); it++) {
+    if (s == *it)
+      return true;
+  }
+  return false;
+}
 
+bool isIdentifier(string s) {
+  return false;
+}
 
 bool isSeparator (char c) {
     if (c == '\'' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']' || c == ',' ||
@@ -147,26 +167,25 @@ bool isSeparator (char c) {
     } else {
         return false;
     }
-
 }
 
 
 
 bool isOperator (char c) {
-    
+
     if (c == '*' || c == '+' || c == '-' || c == '=' || c == '/' || c == '>' || c == '<' || c == '%') {
         return true;
     } else {
         return false;
     }
-    
+
 }
 
 
 
 void testIdentifyingChars (string * s) {
     for (int i = 0; i < s->length(); i++) {
-        
+
         if (isalpha(s->at(i))) {
             alphaVector.push_back(s->at(i));
         } if (isdigit(s->at(i))) {
@@ -180,14 +199,23 @@ void testIdentifyingChars (string * s) {
     }
 }
 void printVector (vector <char> * v) {
-    
+
     for (newIterator it = v->begin(); it != v->end(); ++it) {
-        
+
         cout << " " << *it << " ";
-        
+
     }
-    
+
 }
 
-            
 
+//Accepts an address to a std::list<chars>
+//prints out list to console
+void testPrint (string *l) {
+    //Print Function
+
+    cout << "This is the char list: ";
+    for (int i = 0; i < l->length(); i++) {
+        std::cout /*<< ' '*/ << l->at(i);
+    }
+}
