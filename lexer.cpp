@@ -8,7 +8,7 @@
 #include <vector>
 #include <list>
 #include <ctype.h>
-#define newIterator vector<char>::iterator // just to make the code a little easier to read
+#define newCharIterator vector<char>::iterator // just to make the code a little easier to read
 #define newStringIterator vector<string>::iterator
 
 
@@ -42,6 +42,8 @@ bool finalStateReached ();
 void printSVector (vector <string> * v);
 void addToLexeme ();
 void handleFile (int ac, const char * av[]);
+void runTests ();
+void pushbackKeywords ();
 // this function is going to take the whole string of the whole text and it is also going to take the index we want to start (or pick up from)
 int nextState (string wholeString);
 
@@ -64,7 +66,7 @@ int currentIndex = 0;
 
 
 string currentLexeme;
-string charString;
+string tokenString;
 
 
 
@@ -76,7 +78,17 @@ int main( int argc, const char * argv[] ) {
     char currentChar;
     
     handleFile (argc, argv);
+    removeComments(&tokenString);
+    runTests();
 
+    return 0;
+} //end main
+
+//==========================================================================================
+//==========================================================================================
+
+void pushbackKeywords () {
+    
     //initializeKeywordsVector
     keywords.push_back("int");
     keywords.push_back("float");
@@ -92,53 +104,8 @@ int main( int argc, const char * argv[] ) {
     keywords.push_back("and");
     keywords.push_back("or");
     keywords.push_back("function");
-
-   
-
-    //remove comments from code
-    removeComments(&charString);
-
-
-    testIdentifyingChars(&charString);
     
-// =================================================================================
-    // Testing Section
-    
-//    for (int i = 0; i < charString.length(); i++) {
-//
-//    cout << "Current state = " << currentState << endl;
-//    currentState = nextState(charString);
-//
-//    }
-    for (int m = 0; m < 4; m++) {
-    for (int t = 0; t < 10; t++) {
-    addToLexeme();
-    cout << "This is our lexeme" << currentLexeme << endl;
-        if (finalStateReached()) {
-            cout << "our first lexeme has size: " << currentLexeme.length() << " is done: " << currentLexeme << endl;
-            lexemeVector.push_back(currentLexeme);
-            currentLexeme = "";
-            break;
-        }
-    }
-    }
-    
-//    cout << "\nAlpha chars:"; printCharVector(&alphaVector); cout << endl;
-//    cout << "Operator chars:"; printCharVector(&opVector); cout << endl;
-//    cout << "Seperator chars:"; printCharVector(&sepVector); cout << endl;
-//    cout << "Digit chars:"; printCharVector(&digitVector); cout << endl;
-
-    //Test Print to see if it completed
-    
-    cout << "This is our vector: ";
-    printSVector(&lexemeVector);
-    cout << "\nEnd Program\n";
-
-    return 0;
-} //end main
-
-//==========================================================================================
-
+}
 
 
 void handleFile (int ac, const char * av[]) {
@@ -167,7 +134,7 @@ void handleFile (int ac, const char * av[]) {
         
         
         for (int i = 0; i < contents.length(); i++) {
-            charString.push_back(contents[i]);
+            tokenString.push_back(contents[i]);
         }
         
         
@@ -179,10 +146,9 @@ void handleFile (int ac, const char * av[]) {
 
 
 
-//This function accepts an address to a std::list<char>
-//It iterates through the list and deletes the commented phrases
+//It iterates through the string and deletes the commented phrases
 void removeComments(string *l) {
-    //Remove Comments from charString
+    //Remove Comments from tokenString
     //iterate through string
     // string length is going to change so we have to make it dynamic rather than putting into for loop directly
     int len = l->length();
@@ -263,7 +229,7 @@ void testIdentifyingChars (string * s) {
 }
 void printCharVector (vector <char> * v) {
 
-    for (newIterator it = v->begin(); it != v->end(); ++it) {
+    for (newCharIterator it = v->begin(); it != v->end(); ++it) {
 
         cout << " " << *it << " ";
 
@@ -281,6 +247,41 @@ void printSVector (vector <string> * v) {
     
 }
 
+void runTests() {
+    // =================================================================================
+    // Testing Section
+    
+    //    for (int i = 0; i < tokenString.length(); i++) {
+    //
+    //    cout << "Current state = " << currentState << endl;
+    //    currentState = nextState(tokenString);
+    //
+    //    }
+    for (int m = 0; m < 4; m++) {
+        for (int t = 0; t < 10; t++) {
+            addToLexeme();
+            cout << "This is our lexeme" << currentLexeme << endl;
+            if (finalStateReached()) {
+                cout << "our first lexeme has size: " << currentLexeme.length() << " is done: " << currentLexeme << endl;
+                lexemeVector.push_back(currentLexeme);
+                currentLexeme = "";
+                break;
+            }
+        }
+    }
+    
+    //    cout << "\nAlpha chars:"; printCharVector(&alphaVector); cout << endl;
+    //    cout << "Operator chars:"; printCharVector(&opVector); cout << endl;
+    //    cout << "Seperator chars:"; printCharVector(&sepVector); cout << endl;
+    //    cout << "Digit chars:"; printCharVector(&digitVector); cout << endl;
+    
+    //Test Print to see if it completed
+    
+    cout << "This is our vector: ";
+    printSVector(&lexemeVector);
+    cout << "\nEnd Program\n";
+    
+}
 
 
 //Accepts an address to a std::list<chars>
@@ -331,11 +332,9 @@ int nextState (string wholeString) {
 
 void addToLexeme () {
     
-        nextState(charString);
-        cout << "adding " << charString.at(currentIndex) << " to our lexeme" << endl;
-        currentLexeme.push_back(charString.at(currentIndex));
-    
-        
+        nextState(tokenString);
+        cout << "adding " << tokenString.at(currentIndex) << " to our lexeme" << endl;
+        currentLexeme.push_back(tokenString.at(currentIndex));
         
 }
 
