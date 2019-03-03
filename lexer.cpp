@@ -19,11 +19,12 @@ using namespace std;
 
 // finite state machine
 int fsm[6][6] = {
-    2,4,6,3,3,3,
+    2,4,6,1,3,3,
     2,2,2,3,3,3,
     1,1,1,1,1,1,
     6,4,6,3,3,5,
     6,5,6,3,3,6,
+    1,1,1,1,1,1
 };
 
 
@@ -31,7 +32,6 @@ const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", "
 const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"}; //don't need anymore
 
 void removeComments(string *l); //completed
-void testPrint(string *l);  //completed
 void printCharVector (vector <char> * v); //completed
 bool isKeyword(string s);
 bool isIdentifier(string s);
@@ -43,9 +43,11 @@ void printSVector (vector <string> * v);
 void addToLexeme ();
 void handleFile (int ac, const char * av[]);
 void runTests ();
-void pushbackKeywords ();
+void initKeywordsVec ();
+void fillLexemeVector();
 // this function is going to take the whole string of the whole text and it is also going to take the index we want to start (or pick up from)
-int nextState (string wholeString);
+
+int nextState (char theInput, int index); //returns the state of the machine at the current index //returns -1 if the char is not allowed //increases current index by 1 after reading it
 
 
 vector<string> keywords;
@@ -54,18 +56,21 @@ vector <char> sepVector;
 vector <char> opVector;
 vector <char> digitVector;
 vector <string> keywordVector;
-vector <string> lexemeVector;
 
 
-int currentState = 1;
+
+
 
 // this is the current idex we are working with.
 // every time we use the getState function, we are going to walk through the string until we see a white space. then we are going to stop and change this current index to
-int currentIndex = 0;
+
 
 
 
 string currentLexeme;
+vector <string> lexemeVector;
+int currentState = 1;
+int currentIndex = 0;
 string tokenString;
 
 
@@ -79,7 +84,9 @@ int main( int argc, const char * argv[] ) {
     
     handleFile (argc, argv);
     removeComments(&tokenString);
+    //
     runTests();
+    fillLexemeVector();
 
     return 0;
 } //end main
@@ -87,7 +94,45 @@ int main( int argc, const char * argv[] ) {
 //==========================================================================================
 //==========================================================================================
 
-void pushbackKeywords () {
+void fillLexemeVector () {
+    // test parameters
+    cout << "To begin, the currentLexeme string is: " << currentLexeme << " with size: " << currentLexeme.length()
+    << " \nthe Lexeme Vector " << " with size: " << lexemeVector.size()
+    << " \nthe Current State is: " << currentState << " \nThe current index is: " << currentIndex << endl;
+    
+    for (int i = 0; i < tokenString.length(); i++ ) {
+    //first check if it is in the final state
+    if (currentState == 6) {
+        currentState = 1;
+        currentIndex++;
+    }
+    else if (currentState == 3) {
+        //if it is, add the currentLexeme to the lexemeVector
+        cout << "\nadding " << currentLexeme << " to the lexemeVector." << endl;
+        lexemeVector.push_back(currentLexeme);
+        //change the state to 1
+        currentState = 1;
+    }
+    else {
+        // if it is not, we are going to take the next input
+        char input = tokenString[currentIndex];
+        // now lets get the next state of the machine based on this input and current state;
+        currentState = nextState(input, currentIndex);
+        currentIndex++;
+        
+    }
+    }
+    
+    cout << "\n\nNow the lexeme vector has size: " << lexemeVector.size();
+    cout << "\nLexeme vector: ";
+    printSVector(&lexemeVector);
+    
+    
+    
+}
+
+
+void initKeywordsVec () {
     
     //initializeKeywordsVector
     keywords.push_back("int");
@@ -106,6 +151,11 @@ void pushbackKeywords () {
     keywords.push_back("function");
     
 }
+
+
+
+
+
 
 
 void handleFile (int ac, const char * av[]) {
@@ -257,18 +307,18 @@ void runTests() {
     //    currentState = nextState(tokenString);
     //
     //    }
-    for (int m = 0; m < 4; m++) {
-        for (int t = 0; t < 10; t++) {
-            addToLexeme();
-            cout << "This is our lexeme" << currentLexeme << endl;
-            if (finalStateReached()) {
-                cout << "our first lexeme has size: " << currentLexeme.length() << " is done: " << currentLexeme << endl;
-                lexemeVector.push_back(currentLexeme);
-                currentLexeme = "";
-                break;
-            }
-        }
-    }
+//    for (int m = 0; m < 4; m++) {
+//        for (int t = 0; t < 10; t++) {
+//            addToLexeme();
+//            cout << "This is our lexeme" << currentLexeme << endl;
+//            if (finalStateReached()) {
+//                cout << "our first lexeme has size: " << currentLexeme.length() << " is done: " << currentLexeme << endl;
+//                lexemeVector.push_back(currentLexeme);
+//                currentLexeme = "";
+//                break;
+//            }
+//        }
+//    }
     
     //    cout << "\nAlpha chars:"; printCharVector(&alphaVector); cout << endl;
     //    cout << "Operator chars:"; printCharVector(&opVector); cout << endl;
@@ -277,52 +327,64 @@ void runTests() {
     
     //Test Print to see if it completed
     
-    cout << "This is our vector: ";
-    printSVector(&lexemeVector);
-    cout << "\nEnd Program\n";
+//    cout << "This is our vector: ";
+//    printSVector(&lexemeVector);
+//    cout << "\nEnd Program\n";
+    
+
+    // string is at state 1 and index 0
+    // gets next character and its state changes
+    // is it at state 6?
+    // if yes, go to state 1
+    // if no, then store that character in the currentLexeme string
+    // increase index by 1
+    // is it at state 3?
+    // if yes, add currentLexeme to lexemeVector
+    // if no, repeat
+    
+//    while (currentIndex < tokenString.length()) {
+//        cout << "Index: " << currentIndex << ", ";
+//        cout << "Token: " << tokenString.at(currentIndex) << endl;
+//        currentIndex++;
+//
+//    }
+    
+    
     
 }
 
 
-//Accepts an address to a std::list<chars>
-//prints out list to console
-void testPrint (string *l) {
-    //Print Function
-
-    cout << "This is the char list: ";
-    for (int i = 0; i < l->length(); i++) {
-        std::cout /*<< ' '*/ << l->at(i);
-    }
-}
 
 
 
-int nextState (string wholeString) {
-    char thisChar = wholeString[currentIndex];
-    cout << "This char is: " << thisChar << endl;
 
-    if (isalpha(thisChar)) {
-        currentIndex++;
+int nextState (char theInput, int index) {
+    //returns the state of the machine at the current index
+    //returns -1 if the char is not allowed
+    //increases current index by 1 after reading it
+//    char thisChar = wholeString[currentIndex];
+//    cout << "The current state is: " << currentState << endl;
+//    cout << "This char is: ";
+//    if (isspace(wholeString[currentIndex])) cout << "Space " << endl;
+//    else cout << wholeString[currentIndex] << endl;
+    
+
+    if (isalpha(theInput)) {
             return fsm[currentState-1][0];
         }
-     if (isdigit(thisChar)) {
-        currentIndex++;
+     if (isdigit(theInput)) {
             return fsm[currentState-1][1];
         }
-     if (thisChar == '$') {
-        currentIndex++;
+     if (theInput   == '$') {
             return fsm[currentState-1][2];
         }
-     if (isSeparator(thisChar)) {
-        currentIndex++;
+     if (isSeparator(theInput  )) {
             return fsm[currentState-1][3];
         }
-     if (isOperator(thisChar)) {
-        currentIndex++;
+     if (isOperator(theInput  )) {
             return fsm [currentState-1][4];
         }
-     if (thisChar == '.') {
-        currentIndex++;
+     if (theInput   == '.') {
             // it is not going to reach this because '.' is part of the separator group. fix this later
             return fsm [currentState-1][5];
         }
@@ -330,13 +392,13 @@ int nextState (string wholeString) {
     else return -1;
     }
 
-void addToLexeme () {
-    
-        nextState(tokenString);
-        cout << "adding " << tokenString.at(currentIndex) << " to our lexeme" << endl;
-        currentLexeme.push_back(tokenString.at(currentIndex));
-        
-}
+//void addToLexeme () {
+//
+//        nextState(tokenString);
+//        cout << "adding " << tokenString.at(currentIndex) << " to our lexeme" << endl;
+//        currentLexeme.push_back(tokenString.at(currentIndex));
+//
+//}
 
 bool finalStateReached () {
     if (currentState == 3)
