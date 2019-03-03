@@ -9,6 +9,8 @@
 #include <list>
 #include <ctype.h>
 #define newIterator vector<char>::iterator // just to make the code a little easier to read
+#define newSIterator vector<string>::iterator
+
 
 using namespace std;
 
@@ -41,15 +43,24 @@ bool isIdentifier(string s);
 bool isSeparator (char c); //completed
 bool isOperator (char c); //completed
 void testIdentifyingChars (string * s); //completed
+bool finalStateReached ();
 
 vector <char> alphaVector;
 vector <char> sepVector;
 vector <char> opVector;
 vector <char> digitVector;
 vector <string> keywordVector;
+vector <string> lexemeVector;
+
+void printSVector (vector <string> * v);
+
+void addToLexeme ();
+
 
 int currentState = 1;
 
+string currentLexeme;
+string charString;
 
 
 
@@ -93,7 +104,7 @@ int main( int argc, const char * argv[] ) {
     //see top of file for correct command line usage
     string filename = argv[1];
     char currentChar;
-    string charString;
+    
     //Create filesream
     ifstream file(filename);
     //check to see if file opened correctly
@@ -128,18 +139,34 @@ int main( int argc, const char * argv[] ) {
 // =================================================================================
     // Testing Section
     
-    for (int i = 0; i < charString.length(); i++) {
-        
-    cout << "Current state = " << currentState << endl;
-    currentState = nextState(charString, currentIndex);
-
+//    for (int i = 0; i < charString.length(); i++) {
+//
+//    cout << "Current state = " << currentState << endl;
+//    currentState = nextState(charString, currentIndex);
+//
+//    }
+    for (int m = 0; m < 4; m++) {
+    for (int t = 0; t < 10; t++) {
+    addToLexeme();
+    cout << "This is our lexeme" << currentLexeme << endl;
+        if (finalStateReached()) {
+            cout << "our first lexeme has size: " << currentLexeme.length() << " is done: " << currentLexeme << endl;
+            lexemeVector.push_back(currentLexeme);
+            currentLexeme = "";
+            break;
+        }
     }
+    }
+    
 //    cout << "\nAlpha chars:"; printVector(&alphaVector); cout << endl;
 //    cout << "Operator chars:"; printVector(&opVector); cout << endl;
 //    cout << "Seperator chars:"; printVector(&sepVector); cout << endl;
 //    cout << "Digit chars:"; printVector(&digitVector); cout << endl;
 
     //Test Print to see if it completed
+    
+    cout << "This is our vector: ";
+    printSVector(&lexemeVector);
     cout << "\nEnd Program\n";
 
     return 0;
@@ -239,6 +266,17 @@ void printVector (vector <char> * v) {
 
 }
 
+void printSVector (vector <string> * v) {
+    
+    for (newSIterator it = v->begin(); it != v->end(); ++it) {
+        
+        cout << *it;
+        
+    }
+    
+}
+
+
 
 //Accepts an address to a std::list<chars>
 //prints out list to console
@@ -286,16 +324,23 @@ int nextState (string wholeString, int index) {
     else return -1;
     }
 
+void addToLexeme () {
+    
+        nextState(charString, currentIndex);
+        cout << "adding " << charString.at(currentIndex) << " to our lexeme" << endl;
+        currentLexeme.push_back(charString.at(currentIndex));
+    
+        
+        
+}
 
-//void createCurrentLexeme () {
-//    
-//    while (currentState != 3) {
-//        
-//    }
-//    
-//    
-//    
-//}
+bool finalStateReached () {
+    if (currentState == 3)
+        return false;
+    else return true;
+}
+
+    
 
 
 
