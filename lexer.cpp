@@ -7,11 +7,22 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <ctype.h>
 #define newIterator vector<char>::iterator // just to make the code a little easier to read
 
 using namespace std;
 
 //Global data
+
+// finite state machine
+int fsm[6][6] = {
+    2,4,6,3,3,3,
+    2,2,2,3,3,3,
+    1,1,1,1,1,1,
+    6,4,6,3,3,5,
+    6,5,6,3,3,6,
+};
+
 
 //const string keywordArray[] = { "int", "float", "bool", "if", "else", "then", "do", "while",
   //  "whileend", "do", "doend", "for", "and", "or", "function"};
@@ -37,6 +48,18 @@ vector <char> opVector;
 vector <char> digitVector;
 vector <string> keywordVector;
 
+int currentState = 1;
+
+
+
+
+//==========================================================================================
+// this function is going to take the whole string of the whole text and it is also going to take the index we want to start (or pick up from)
+int nextState (string wholeString, int index);
+
+// this is the current idex we are working with.
+// every time we use the getState function, we are going to walk through the string until we see a white space. then we are going to stop and change this current index to 
+int currentIndex = 0;
 
 //==========================================================================================
 
@@ -101,11 +124,20 @@ int main( int argc, const char * argv[] ) {
     //testPrint(&charString);
 
     testIdentifyingChars(&charString);
+    
+// =================================================================================
+    // Testing Section
+    
+    for (int i = 0; i < charString.length(); i++) {
+        
+    cout << "Current state = " << currentState << endl;
+    currentState = nextState(charString, currentIndex);
 
-    cout << "\nAlpha chars:"; printVector(&alphaVector); cout << endl;
-    cout << "Operator chars:"; printVector(&opVector); cout << endl;
-    cout << "Seperator chars:"; printVector(&sepVector); cout << endl;
-    cout << "Digit chars:"; printVector(&digitVector); cout << endl;
+    }
+//    cout << "\nAlpha chars:"; printVector(&alphaVector); cout << endl;
+//    cout << "Operator chars:"; printVector(&opVector); cout << endl;
+//    cout << "Seperator chars:"; printVector(&sepVector); cout << endl;
+//    cout << "Digit chars:"; printVector(&digitVector); cout << endl;
 
     //Test Print to see if it completed
     cout << "\nEnd Program\n";
@@ -163,7 +195,7 @@ bool isIdentifier(string s) {
 
 bool isSeparator (char c) {
     if (c == '\'' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']' || c == ',' ||
-        c == '.' || c == ':' || c == ';' || c == '!') {
+        c == '.' || c == ':' || c == ';' || c == '!' || isspace(c)) {
         return true;
     } else {
         return false;
@@ -218,3 +250,53 @@ void testPrint (string *l) {
         std::cout /*<< ' '*/ << l->at(i);
     }
 }
+
+
+
+int nextState (string wholeString, int index) {
+    char thisChar = wholeString[index];
+    cout << "This char is: " << thisChar << endl;
+
+    if (isalpha(thisChar)) {
+        currentIndex++;
+            return fsm[currentState-1][0];
+        }
+     if (isdigit(thisChar)) {
+        currentIndex++;
+            return fsm[currentState-1][1];
+        }
+     if (thisChar == '$') {
+        currentIndex++;
+            return fsm[currentState-1][2];
+        }
+     if (isSeparator(thisChar)) {
+        currentIndex++;
+            return fsm[currentState-1][3];
+        }
+     if (isOperator(thisChar)) {
+        currentIndex++;
+            return fsm [currentState-1][4];
+        }
+     if (thisChar == '.') {
+        currentIndex++;
+            // it is not going to reach this because '.' is part of the separator group. fix this later
+            return fsm [currentState-1][5];
+        }
+    
+    else return -1;
+    }
+
+
+//void createCurrentLexeme () {
+//    
+//    while (currentState != 3) {
+//        
+//    }
+//    
+//    
+//    
+//}
+
+
+
+
