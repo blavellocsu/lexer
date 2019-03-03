@@ -9,11 +9,12 @@
 #include <list>
 #include <ctype.h>
 #define newIterator vector<char>::iterator // just to make the code a little easier to read
-#define newSIterator vector<string>::iterator
+#define newStringIterator vector<string>::iterator
 
 
 using namespace std;
 
+//==========================================================================================
 //Global data
 
 // finite state machine
@@ -26,25 +27,26 @@ int fsm[6][6] = {
 };
 
 
-//const string keywordArray[] = { "int", "float", "bool", "if", "else", "then", "do", "while",
-  //  "whileend", "do", "doend", "for", "and", "or", "function"};
-vector<string> keywords;
-
-const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", ";", "!"};
-const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"};
+const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", ";", "!"}; //don't need anymore
+const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"}; //don't need anymore
 
 void removeComments(string *l); //completed
 void testPrint(string *l);  //completed
-void printVector (vector <char> * v); //completed
-
-//string grabLexeme (list<char> *l);
+void printCharVector (vector <char> * v); //completed
 bool isKeyword(string s);
 bool isIdentifier(string s);
 bool isSeparator (char c); //completed
 bool isOperator (char c); //completed
 void testIdentifyingChars (string * s); //completed
 bool finalStateReached ();
+void printSVector (vector <string> * v);
+void addToLexeme ();
+void handleFile (int ac, const char * av[]);
+// this function is going to take the whole string of the whole text and it is also going to take the index we want to start (or pick up from)
+int nextState (string wholeString);
 
+
+vector<string> keywords;
 vector <char> alphaVector;
 vector <char> sepVector;
 vector <char> opVector;
@@ -52,12 +54,14 @@ vector <char> digitVector;
 vector <string> keywordVector;
 vector <string> lexemeVector;
 
-void printSVector (vector <string> * v);
-
-void addToLexeme ();
-
 
 int currentState = 1;
+
+// this is the current idex we are working with.
+// every time we use the getState function, we are going to walk through the string until we see a white space. then we are going to stop and change this current index to
+int currentIndex = 0;
+
+
 
 string currentLexeme;
 string charString;
@@ -65,23 +69,13 @@ string charString;
 
 
 //==========================================================================================
-// this function is going to take the whole string of the whole text and it is also going to take the index we want to start (or pick up from)
-int nextState (string wholeString, int index);
-
-// this is the current idex we are working with.
-// every time we use the getState function, we are going to walk through the string until we see a white space. then we are going to stop and change this current index to 
-int currentIndex = 0;
-
 //==========================================================================================
 
 int main( int argc, const char * argv[] ) {
-    //check for command line arguments
-    string usage = "Usage: \"./<name> <filename.txt>\"";
-    //check for correct usage: "./lexer sample.txt"
-    if (argc != 2) {
-        cout << "Invalid Arguments.\n" << usage << endl;
-        exit(1);
-    }
+    
+    char currentChar;
+    
+    handleFile (argc, argv);
 
     //initializeKeywordsVector
     keywords.push_back("int");
@@ -99,40 +93,11 @@ int main( int argc, const char * argv[] ) {
     keywords.push_back("or");
     keywords.push_back("function");
 
-    //File handling
-    //read filename in from command line argument
-    //see top of file for correct command line usage
-    string filename = argv[1];
-    char currentChar;
-    
-    //Create filesream
-    ifstream file(filename);
-    //check to see if file opened correctly
-    if (file.is_open()) {
-        cout << "File opened successfully." << endl;
-
-        // read content of txt file (including white spaces) into a string
-        string contents((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-
-
-        for (int i = 0; i < contents.length(); i++) {
-            charString.push_back(contents[i]);
-          }
-
-
-    } else {
-        cout << "File Error: Could not open file.\n" << usage << endl;
-        exit(1);
-    }
+   
 
     //remove comments from code
     removeComments(&charString);
 
-    //spacing
-    //cout << "\n\n";
-
-    //output to see if comments are gone
-    //testPrint(&charString);
 
     testIdentifyingChars(&charString);
     
@@ -142,7 +107,7 @@ int main( int argc, const char * argv[] ) {
 //    for (int i = 0; i < charString.length(); i++) {
 //
 //    cout << "Current state = " << currentState << endl;
-//    currentState = nextState(charString, currentIndex);
+//    currentState = nextState(charString);
 //
 //    }
     for (int m = 0; m < 4; m++) {
@@ -158,10 +123,10 @@ int main( int argc, const char * argv[] ) {
     }
     }
     
-//    cout << "\nAlpha chars:"; printVector(&alphaVector); cout << endl;
-//    cout << "Operator chars:"; printVector(&opVector); cout << endl;
-//    cout << "Seperator chars:"; printVector(&sepVector); cout << endl;
-//    cout << "Digit chars:"; printVector(&digitVector); cout << endl;
+//    cout << "\nAlpha chars:"; printCharVector(&alphaVector); cout << endl;
+//    cout << "Operator chars:"; printCharVector(&opVector); cout << endl;
+//    cout << "Seperator chars:"; printCharVector(&sepVector); cout << endl;
+//    cout << "Digit chars:"; printCharVector(&digitVector); cout << endl;
 
     //Test Print to see if it completed
     
@@ -173,6 +138,46 @@ int main( int argc, const char * argv[] ) {
 } //end main
 
 //==========================================================================================
+
+
+
+void handleFile (int ac, const char * av[]) {
+    //check for command line arguments
+    string usage = "Usage: \"./<name> <filename.txt>\"";
+    //check for correct usage: "./lexer sample.txt"
+    if (ac != 2) {
+        cout << "Invalid Arguments.\n" << usage << endl;
+        exit(1);
+    }
+    
+    //File handling
+    //read filename in from command line argument
+    //see top of file for correct command line usage
+    string filename = av[1];
+    
+    
+    //Create filesream
+    ifstream file(filename);
+    //check to see if file opened correctly
+    if (file.is_open()) {
+        cout << "File opened successfully." << endl;
+        
+        // read content of txt file (including white spaces) into a string
+        string contents((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+        
+        
+        for (int i = 0; i < contents.length(); i++) {
+            charString.push_back(contents[i]);
+        }
+        
+        
+    } else {
+        cout << "File Error: Could not open file.\n" << usage << endl;
+        exit(1);
+    }
+}
+
+
 
 //This function accepts an address to a std::list<char>
 //It iterates through the list and deletes the commented phrases
@@ -256,7 +261,7 @@ void testIdentifyingChars (string * s) {
 
     }
 }
-void printVector (vector <char> * v) {
+void printCharVector (vector <char> * v) {
 
     for (newIterator it = v->begin(); it != v->end(); ++it) {
 
@@ -268,7 +273,7 @@ void printVector (vector <char> * v) {
 
 void printSVector (vector <string> * v) {
     
-    for (newSIterator it = v->begin(); it != v->end(); ++it) {
+    for (newStringIterator it = v->begin(); it != v->end(); ++it) {
         
         cout << *it;
         
@@ -291,8 +296,8 @@ void testPrint (string *l) {
 
 
 
-int nextState (string wholeString, int index) {
-    char thisChar = wholeString[index];
+int nextState (string wholeString) {
+    char thisChar = wholeString[currentIndex];
     cout << "This char is: " << thisChar << endl;
 
     if (isalpha(thisChar)) {
@@ -326,7 +331,7 @@ int nextState (string wholeString, int index) {
 
 void addToLexeme () {
     
-        nextState(charString, currentIndex);
+        nextState(charString);
         cout << "adding " << charString.at(currentIndex) << " to our lexeme" << endl;
         currentLexeme.push_back(charString.at(currentIndex));
     
