@@ -45,9 +45,9 @@ void handleFile (int ac, const char * av[]);
 void runTests ();
 void initKeywordsVec ();
 void fillLexemeVector();
-// this function is going to take the whole string of the whole text and it is also going to take the index we want to start (or pick up from)
 
-int nextState (char theInput, int index); //returns the state of the machine at the current index //returns -1 if the char is not allowed //increases current index by 1 after reading it
+
+int nextState (char theInput, int index);
 
 
 vector<string> keywords;
@@ -58,11 +58,6 @@ vector <char> digitVector;
 vector <string> keywordVector;
 
 
-
-
-
-// this is the current idex we are working with.
-// every time we use the getState function, we are going to walk through the string until we see a white space. then we are going to stop and change this current index to
 
 
 
@@ -84,7 +79,7 @@ int main( int argc, const char * argv[] ) {
     
     handleFile (argc, argv);
     removeComments(&tokenString);
-    //
+
     runTests();
     fillLexemeVector();
 
@@ -100,32 +95,83 @@ void fillLexemeVector () {
     << " \nthe Lexeme Vector " << " with size: " << lexemeVector.size()
     << " \nthe Current State is: " << currentState << " \nThe current index is: " << currentIndex << endl;
     
-    for (int i = 0; i < tokenString.length(); i++ ) {
-    //first check if it is in the final state
-    if (currentState == 6) {
-        currentState = 1;
-        currentIndex++;
-    }
-    else if (currentState == 3) {
-        //if it is, add the currentLexeme to the lexemeVector
-        cout << "\nadding " << currentLexeme << " to the lexemeVector." << endl;
-        lexemeVector.push_back(currentLexeme);
-        //change the state to 1
-        currentState = 1;
-    }
-    else {
-        // if it is not, we are going to take the next input
-        char input = tokenString[currentIndex];
-        // now lets get the next state of the machine based on this input and current state;
-        currentState = nextState(input, currentIndex);
-        currentIndex++;
-        
-    }
-    }
+
+    for (int i = 0; i < 20; i++) {
+    cout << "\nInput: " << tokenString[currentIndex];
+    cout << "\nPutting that into FSM";
+    currentState = nextState(tokenString[currentIndex], currentIndex);
+        cout << "\nWe are adding this input to the currentLexeme.";
+        cout << "\ncurrentLexeme before: " << currentLexeme;
+        currentLexeme.push_back(tokenString[i]);
+        cout << "\ncurrentLexeme after: " << currentLexeme;
     
-    cout << "\n\nNow the lexeme vector has size: " << lexemeVector.size();
-    cout << "\nLexeme vector: ";
-    printSVector(&lexemeVector);
+        if (currentState == 3) {
+            cout << "We have reached an accepting state.\nChanging current state to 1." <<
+            "\nAdding this lexeme to lexeme vector.\nSkipping Rest of loop.";
+            cout << "\nLexemeVector before: ";
+            printSVector(&lexemeVector);
+            lexemeVector.push_back(currentLexeme);
+            cout << "\nLexemeVector after: ";
+            printSVector(&lexemeVector);
+            
+            continue;
+        }
+    cout << "\nNow the state is: " << currentState;
+    currentIndex++;
+    cout << "\nIndex: " << currentIndex;
+    }
+//    cout << "\nInput: " << tokenString[currentIndex];
+//    cout << "\nPutting that into FSM";
+//    currentState = nextState(tokenString[currentIndex], currentIndex);
+//    cout << "\nNow the state is: " << currentState;
+//    currentIndex++;
+//    cout << "\nIndex: " << currentIndex;
+//    cout << "\nInput: " << tokenString[currentIndex];
+//    cout << "\nPutting that into FSM";
+//    currentState = nextState(tokenString[currentIndex], currentIndex);
+//    cout << "\nNow the state is: " << currentState;
+//    currentIndex++;
+//    cout << "\nIndex: " << currentIndex;
+//    cout << "\nInput: " << tokenString[currentIndex];
+//    cout << "\nPutting that into FSM";
+//    currentState = nextState(tokenString[currentIndex], currentIndex);
+//    cout << "\nNow the state is: " << currentState;
+//    currentIndex++;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+//    for (int i = 0; i < tokenString.length(); i++ ) {
+//    //first check if it is in the dead state
+//    if (currentState == 6) {
+//        currentState = 1;
+//        currentIndex++;
+//    }
+//    else if (currentState == 3) {
+//        //if it is, add the currentLexeme to the lexemeVector
+//        cout << "\nadding " << currentLexeme << " to the lexemeVector." << endl;
+//        lexemeVector.push_back(currentLexeme);
+//        //change the state to 1
+//        currentState = 1;
+//    }
+//    else {
+//        // if it is not, we are going to take the next input
+//        char input = tokenString[currentIndex];
+//        // now lets get the next state of the machine based on this input and current state;
+//        currentState = nextState(input, currentIndex);
+//        currentIndex++;
+//
+//    }
+//    }
+//
+//    cout << "\n\nNow the lexeme vector has size: " << lexemeVector.size();
+//    cout << "\nLexeme vector: ";
+//    printSVector(&lexemeVector);
     
     
     
@@ -151,11 +197,6 @@ void initKeywordsVec () {
     keywords.push_back("function");
     
 }
-
-
-
-
-
 
 
 void handleFile (int ac, const char * av[]) {
@@ -224,10 +265,6 @@ void removeComments(string *l) {
     }//end for
 }//end function
 
-//string grabLexeme (list<char> *l) {
-//    // if it is an alphebetical character
-//
-//}
 
 bool isKeyword(string s) {
   for (vector<string>::iterator it = keywords.begin(); it != keywords.end(); it++) {
@@ -262,21 +299,8 @@ bool isOperator (char c) {
 
 
 
-void testIdentifyingChars (string * s) {
-    for (int i = 0; i < s->length(); i++) {
 
-        if (isalpha(s->at(i)) || s->at(i) == ' ') {
-            alphaVector.push_back(s->at(i));
-        } if (isdigit(s->at(i))) {
-            digitVector.push_back(s->at(i));
-        } if (isOperator(s->at(i))) {
-            opVector.push_back(s->at(i));
-        } if (isSeparator(s->at(i))) {
-            sepVector.push_back(s->at(i));
-        }
 
-    }
-}
 void printCharVector (vector <char> * v) {
 
     for (newCharIterator it = v->begin(); it != v->end(); ++it) {
@@ -297,76 +321,10 @@ void printSVector (vector <string> * v) {
     
 }
 
-void runTests() {
-    // =================================================================================
-    // Testing Section
-    
-    //    for (int i = 0; i < tokenString.length(); i++) {
-    //
-    //    cout << "Current state = " << currentState << endl;
-    //    currentState = nextState(tokenString);
-    //
-    //    }
-//    for (int m = 0; m < 4; m++) {
-//        for (int t = 0; t < 10; t++) {
-//            addToLexeme();
-//            cout << "This is our lexeme" << currentLexeme << endl;
-//            if (finalStateReached()) {
-//                cout << "our first lexeme has size: " << currentLexeme.length() << " is done: " << currentLexeme << endl;
-//                lexemeVector.push_back(currentLexeme);
-//                currentLexeme = "";
-//                break;
-//            }
-//        }
-//    }
-    
-    //    cout << "\nAlpha chars:"; printCharVector(&alphaVector); cout << endl;
-    //    cout << "Operator chars:"; printCharVector(&opVector); cout << endl;
-    //    cout << "Seperator chars:"; printCharVector(&sepVector); cout << endl;
-    //    cout << "Digit chars:"; printCharVector(&digitVector); cout << endl;
-    
-    //Test Print to see if it completed
-    
-//    cout << "This is our vector: ";
-//    printSVector(&lexemeVector);
-//    cout << "\nEnd Program\n";
-    
-
-    // string is at state 1 and index 0
-    // gets next character and its state changes
-    // is it at state 6?
-    // if yes, go to state 1
-    // if no, then store that character in the currentLexeme string
-    // increase index by 1
-    // is it at state 3?
-    // if yes, add currentLexeme to lexemeVector
-    // if no, repeat
-    
-//    while (currentIndex < tokenString.length()) {
-//        cout << "Index: " << currentIndex << ", ";
-//        cout << "Token: " << tokenString.at(currentIndex) << endl;
-//        currentIndex++;
-//
-//    }
-    
-    
-    
-}
-
-
-
-
-
 
 int nextState (char theInput, int index) {
     //returns the state of the machine at the current index
     //returns -1 if the char is not allowed
-    //increases current index by 1 after reading it
-//    char thisChar = wholeString[currentIndex];
-//    cout << "The current state is: " << currentState << endl;
-//    cout << "This char is: ";
-//    if (isspace(wholeString[currentIndex])) cout << "Space " << endl;
-//    else cout << wholeString[currentIndex] << endl;
     
 
     if (isalpha(theInput)) {
@@ -392,6 +350,9 @@ int nextState (char theInput, int index) {
     else return -1;
     }
 
+// ==========================================================================
+// Not using right now
+
 //void addToLexeme () {
 //
 //        nextState(tokenString);
@@ -400,14 +361,85 @@ int nextState (char theInput, int index) {
 //
 //}
 
-bool finalStateReached () {
-    if (currentState == 3)
-        return false;
-    else return true;
-}
+//bool finalStateReached () {
+//    if (currentState == 3)
+//        return false;
+//    else return true;
+//}
 
     
 
 
 
+void runTests() {
+    // =================================================================================
+    // Testing Section
+    
+    //    for (int i = 0; i < tokenString.length(); i++) {
+    //
+    //    cout << "Current state = " << currentState << endl;
+    //    currentState = nextState(tokenString);
+    //
+    //    }
+    //    for (int m = 0; m < 4; m++) {
+    //        for (int t = 0; t < 10; t++) {
+    //            addToLexeme();
+    //            cout << "This is our lexeme" << currentLexeme << endl;
+    //            if (finalStateReached()) {
+    //                cout << "our first lexeme has size: " << currentLexeme.length() << " is done: " << currentLexeme << endl;
+    //                lexemeVector.push_back(currentLexeme);
+    //                currentLexeme = "";
+    //                break;
+    //            }
+    //        }
+    //    }
+    
+    //    cout << "\nAlpha chars:"; printCharVector(&alphaVector); cout << endl;
+    //    cout << "Operator chars:"; printCharVector(&opVector); cout << endl;
+    //    cout << "Seperator chars:"; printCharVector(&sepVector); cout << endl;
+    //    cout << "Digit chars:"; printCharVector(&digitVector); cout << endl;
+    
+    //Test Print to see if it completed
+    
+    //    cout << "This is our vector: ";
+    //    printSVector(&lexemeVector);
+    //    cout << "\nEnd Program\n";
+    
+    
+    // string is at state 1 and index 0
+    // gets next character and its state changes
+    // is it at state 6?
+    // if yes, go to state 1
+    // if no, then store that character in the currentLexeme string
+    // increase index by 1
+    // is it at state 3?
+    // if yes, add currentLexeme to lexemeVector
+    // if no, repeat
+    
+    //    while (currentIndex < tokenString.length()) {
+    //        cout << "Index: " << currentIndex << ", ";
+    //        cout << "Token: " << tokenString.at(currentIndex) << endl;
+    //        currentIndex++;
+    //
+    //    }
+    
+    
+    
+}
+
+void testIdentifyingChars (string * s) {
+    for (int i = 0; i < s->length(); i++) {
+        
+        if (isalpha(s->at(i)) || s->at(i) == ' ') {
+            alphaVector.push_back(s->at(i));
+        } if (isdigit(s->at(i))) {
+            digitVector.push_back(s->at(i));
+        } if (isOperator(s->at(i))) {
+            opVector.push_back(s->at(i));
+        } if (isSeparator(s->at(i))) {
+            sepVector.push_back(s->at(i));
+        }
+        
+    }
+}
 
