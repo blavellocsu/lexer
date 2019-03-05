@@ -47,6 +47,7 @@ void initKeywordsVec ();
 void fillLexemeVector();
 void removeSpaces ();
 void getOutput ();
+void seeASCIIofChars ();
 
 
 int nextState (char theInput, int index);
@@ -81,14 +82,15 @@ int main( int argc, const char * argv[] ) {
     
     handleFile (argc, argv);
     removeComments(&tokenString);
+//    seeASCIIofChars ();
 
     runTests();
     fillLexemeVector();
-   // removeSpaces();
-    
+//    removeSpaces();
+
     cout << "------------------------" << endl;
     printSVector(&lexemeVector);
-    
+//
     getOutput();
 
     return 0;
@@ -102,14 +104,17 @@ void fillLexemeVector () {
     cout << "\nCurrent State: " << currentState;
     cout << "\nCurrent Lexeme: " << currentLexeme;
     cout << "\nInput" << tokenString[currentIndex];
-    cout << "\nLexeme Vector: ";
+    
     cout << "\nLexeme Vector Size: " << lexemeVector.size();
+    cout << "\nLexeme Vector: ";
     printSVector(&lexemeVector);
     
     //check state
     currentState = nextState(tokenString[currentIndex], currentIndex);
     if (currentState == 3) {
         cout << "\nAccepting";
+        // make sure it is not a space
+        if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9)
         currentLexeme.push_back(tokenString[currentIndex]);
         lexemeVector.push_back(currentLexeme);
     
@@ -120,6 +125,7 @@ void fillLexemeVector () {
         
     }
     else {
+        if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9)
         currentLexeme.push_back(tokenString[currentIndex]);
         currentIndex++;
     }
@@ -157,28 +163,18 @@ void getOutput () {
     
 }
 
+
+
+
+void seeASCIIofChars () {
     
-    
-    
-    
-void removeSpaces () {
-    
-    for (vector<string>::iterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
-        
-        if (it->size() == 1) {
-            if (isspace(it->at(0))) {
-                cout << "Removing: " << it->at(0) << endl;
-                lexemeVector.erase(it);
-            }
-        }
-        
-        
+    for (int i = 0; i < tokenString.length(); i++) {
+        cout << "\nCharacter: " << tokenString[i] << " ASCII: " << int(tokenString[i]);
     }
     
-    
-    
 }
-    
+
+
 
 
 
@@ -272,10 +268,13 @@ void removeComments(string *l) {
 
 
 bool isKeyword(string s) {
-  for (vector<string>::iterator it = keywords.begin(); it != keywords.end(); it++) {
-    if (s == *it)
-      return true;
-  } return false;
+//  for (vector<string>::iterator it = keywords.begin(); it != keywords.end(); it++) {
+//    if (s == *it)
+//      return true;
+//  } return false;
+    if (s == "int" || s == "float" || s == "bool" || s == "if" || s == "else" || s == "then" || s == "do" || s == "while" || s == "whileend" || s == "do" || s == "doend" || s == "for" || s == "and" || s == "or" || s == "function") {
+        return true;
+    } else return false;
 }
 
 bool isIdentifier(string s) {
