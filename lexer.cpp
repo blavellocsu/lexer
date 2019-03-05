@@ -57,6 +57,7 @@ int main( int argc, const char * argv[] ) {
     fillLexemeVector();
     cout << "------------------------" << endl;
     getOutput();
+    outputFile.close();
     cout << endl;
 
     return 0;
@@ -67,7 +68,6 @@ int main( int argc, const char * argv[] ) {
 
 void fillLexemeVector () {
     for (int i = 0; i < tokenString.size()+1 ; i++) {
-
 
         //check state
         currentState = nextState(tokenStrPos, currentIndex);
@@ -111,31 +111,31 @@ void getOutput () {
                 //print it as OPERATOR\T\T=\t\t\t\ it
                 cout << endl;
                 cout << "OPERATOR\t\t = \t\t" << *it;
+                outputFile << "OPERATOR\t\t = \t\t" << *it << endl;
             }
             // if it is a separator
             if (isSeparator(it->at(0))) {
                 cout << endl;
                 cout << "SEPARATOR\t\t = \t\t" << *it;
+                outputFile << "SEPARATOR\t\t = \t\t" << *it << endl;
             }
         }
         else {
             if (isKeyword(*it)) {
                 cout << endl;
                 cout << "KEYWORD\t\t\t = \t\t" << *it;
+                outputFile << "KEYWORD\t\t\t = \t\t" << *it << endl;
             }
             else {
                 if (it->size() != 0) {
                     cout << endl;
                     cout << "IDENTIFIER\t\t = \t\t" << *it;
-                }
-            }
-        }
+                    outputFile << "IDENTIFIER\t\t\t = \t\t" << *it << endl;
+                }//end if
+            }//end else
+        }//end else
     }
-
-}
-
-
-
+}//end getOutput
 
 
 void handleFile (int ac, const char * av[]) {
@@ -152,7 +152,6 @@ void handleFile (int ac, const char * av[]) {
     //see top of file for correct command line usage
     string filename = av[1];
 
-
     //Create filesream
     ifstream file(filename);
     //check to see if file opened correctly
@@ -162,19 +161,19 @@ void handleFile (int ac, const char * av[]) {
         // read content of txt file (including white spaces) into a string
         string contents((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
 
-
         for (int i = 0; i < contents.length(); i++) {
             tokenString.push_back(contents[i]);
         }
 
+        outputFile.open("output_" + filename);
+        outputFile << "\nTOKENS\t\t\t\t\t" << "Lexemes\n" << endl;
 
-    }
+    }//end if
     else {
         cout << "File Error: Could not open file.\n" << usage << endl;
         exit(1);
-    }
-}
-
+    }//end error test
+}//end handleFile
 
 
 //It iterates through the string and deletes the commented phrases
@@ -211,7 +210,7 @@ bool isKeyword(string s) {
         return true;
     }
     else return false;
-}
+}//end isKeyword
 
 
 bool isSeparator (char c) {
@@ -222,36 +221,29 @@ bool isSeparator (char c) {
     else {
         return false;
     }
-}
+}//end isSeparator
 
 bool isOperator (char c) {
-
     if (c == '*' || c == '+' || c == '-' || c == '=' || c == '/' || c == '>' || c == '<' || c == '%') {
         return true;
     }
     else {
         return false;
     }
-
-}
+}//end isOperator
 
 
 
 void printSVector (vector <string> * v) {
-
     for (newStringIterator it = v->begin(); it != v->end(); ++it) {
-
-        cout << *it;
-
+      cout << *it;
     }
-
-}
+}//end printSVector
 
 
 int nextState (char theInput, int index) {
     //returns the state of the machine at the current index
     //returns -1 if the char is not allowed
-
 
     if (isalpha(theInput)) {
         return fsm[currentState-1][0];
@@ -272,6 +264,5 @@ int nextState (char theInput, int index) {
         // it is not going to reach this because '.' is part of the separator group. fix this later
         return fsm [currentState-1][5];
     }
-
     else return -1;
-}
+}//end nextState
