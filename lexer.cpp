@@ -113,20 +113,20 @@ void getOutput () {
             if (isSeparator(it->at(0))) {
                 cout << endl;
                 cout << "SEPARATOR\t\t = \t\t" << *it;
-                outputFile << "SEPARATOR\t = \t\t" << *it << endl;
+                outputFile << "SEPARATOR\t = \t" << *it << endl;
             }
         }
         else {
             if (isKeyword(*it)) {
                 cout << endl;
                 cout << "KEYWORD\t\t\t = \t\t" << *it;
-                outputFile << "KEYWORD\t\t = \t\t" << *it << endl;
+                outputFile << "KEYWORD\t\t = \t" << *it << endl;
             }
             else {
                 if (it->size() != 0) {
                     cout << endl;
                     cout << "IDENTIFIER\t\t = \t\t" << *it;
-                    outputFile << "IDENTIFIER\t = \t\t" << *it << endl;
+                    outputFile << "IDENTIFIER\t = \t" << *it << endl;
                 }//end if
             }//end else
         }//end else
@@ -162,7 +162,7 @@ void handleFile (int ac, const char * av[]) {
         }
 
         outputFile.open("output_" + filename);
-        outputFile << "\nTOKENS\t\t\t\t" << "Lexemes\n" << endl;
+        outputFile << "\nTOKENS\t\t\t" << "Lexemes\n" << endl;
 
     }//end if
     else {
