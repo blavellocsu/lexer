@@ -45,6 +45,7 @@ void handleFile (int ac, const char * av[]);
 void runTests ();
 void initKeywordsVec ();
 void fillLexemeVector();
+void removeSpaces ();
 
 
 int nextState (char theInput, int index);
@@ -82,6 +83,10 @@ int main( int argc, const char * argv[] ) {
 
     runTests();
     fillLexemeVector();
+    removeSpaces();
+    
+    cout << "------------------------" << endl;
+    printSVector(&lexemeVector);
 
     return 0;
 } //end main
@@ -116,6 +121,7 @@ void fillLexemeVector () {
         currentIndex++;
     }
                                    }
+    
                                    
     
     //    // test parameters
@@ -191,7 +197,23 @@ void fillLexemeVector () {
     
     
     
+void removeSpaces () {
     
+    for (vector<string>::iterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
+        
+        if (it->size() == 1) {
+            if (isspace(it->at(0))) {
+                cout << "Removing: " << it->at(0) << endl;
+                lexemeVector.erase(it);
+            }
+        }
+        
+        
+    }
+    
+    
+    
+}
     
     
     
