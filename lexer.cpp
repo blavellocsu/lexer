@@ -90,56 +90,84 @@ int main( int argc, const char * argv[] ) {
 //==========================================================================================
 
 void fillLexemeVector () {
-    // test parameters
-    cout << "To begin, the currentLexeme string is: " << currentLexeme << " with size: " << currentLexeme.length()
-    << " \nthe Lexeme Vector " << " with size: " << lexemeVector.size()
-    << " \nthe Current State is: " << currentState << " \nThe current index is: " << currentIndex << endl;
+    for (int i = 0; i < tokenString.size()+1 ; i++) {
+    cout << "\nCurrent State: " << currentState;
+    cout << "\nCurrent Lexeme: " << currentLexeme;
+    cout << "\nInput" << tokenString[currentIndex];
+    cout << "\nLexeme Vector: ";
+    cout << "\nLexeme Vector Size: " << lexemeVector.size();
+    printSVector(&lexemeVector);
     
-
-    for (int i = 0; i < 12; i++) {
-        
-        if (currentState == 3) {
-            cout << "\nWe have reached an accepting state.\nChanging current state to 1.";
-            currentState = 1;
-            cout << "\nSize of currentLexme: " << currentLexeme.size();
-            cout << "\nThis is the currentLexeme: " << currentLexeme;
-            if (currentLexeme.size() == 1 && isspace(currentLexeme[0])) {
-                cout << "\nBecause this lexeme is just a space, we are not adding it to the lexemeVector";
-            } else {
-            cout << "\nAdding this lexeme: " << currentLexeme << " to lexeme vector.\nSkipping Rest of loop.";
-            cout << "\nLexemeVector before: ";
-            if (lexemeVector.size() == 0) cout << "Empty";
-            else printSVector(&lexemeVector);
-            lexemeVector.push_back(currentLexeme);
-            cout << "\nLexemeVector after: ";
-            printSVector(&lexemeVector);
-            cout << endl;
-            currentLexeme = "";
-            if (currentLexeme.size() != 0) cout << "ERROR ERROR ERROR DID NOT MAKE LEXEME EMPTY FOR SOME REASON";
-                }
-            
-            cout << "\nMoving On\n --------------------------";
-            continue;
-        }
-        
-        cout << "\nThe state is: " << currentState;
-        cout << "\nThe index is: " << currentIndex;
-        cout << "\nInput: " << tokenString[currentIndex];
-        cout << "\nPutting that into FSM";
-        currentState = nextState(tokenString[currentIndex], currentIndex);
-        cout << "\nNow the state is: " << currentState;
-        // analyze the state
-        if (!isspace(tokenString[currentIndex])){
-        cout << "\nWe are adding this input to the currentLexeme.";
-        cout << "\ncurrentLexeme before: " << currentLexeme;
-        currentLexeme.push_back(tokenString[i]);
-        cout << "\ncurrentLexeme after: " << currentLexeme << endl;
-        }
+    //check state
+    currentState = nextState(tokenString[currentIndex], currentIndex);
+    if (currentState == 3) {
+        cout << "\nAccepting";
+        currentLexeme.push_back(tokenString[currentIndex]);
+        lexemeVector.push_back(currentLexeme);
     
+        currentState = 1;
+        currentIndex++;
+        cout << "\nclearing lexeme";
+        currentLexeme = "";
         
+    }
+    else {
+        currentLexeme.push_back(tokenString[currentIndex]);
+        currentIndex++;
+    }
+                                   }
+                                   
     
-    currentIndex++;
-        cout << "\nMoving On\n --------------------------";
+    //    // test parameters
+//    cout << "To begin, the currentLexeme string is: " << currentLexeme << " with size: " << currentLexeme.length()
+//    << " \nthe Lexeme Vector " << " with size: " << lexemeVector.size()
+//    << " \nthe Current State is: " << currentState << " \nThe current index is: " << currentIndex << endl;
+//
+//
+//    for (int i = 0; i < 12; i++) {
+//
+//        if (currentState == 3) {
+//            cout << "\nWe have reached an accepting state.\nChanging current state to 1.";
+//            currentState = 1;
+//            cout << "\nSize of currentLexeme: " << currentLexeme.size();
+//            cout << "\nThis is the currentLexeme: " << currentLexeme;
+//            if (currentLexeme.size() == 1 && isspace(currentLexeme[0])) {
+//                cout << "\nBecause this lexeme is just a space, we are not adding it to the lexemeVector";
+//            } else {
+//            cout << "\nAdding this lexeme: " << currentLexeme << " to lexeme vector.\nSkipping Rest of loop.";
+//            cout << "\nLexemeVector before: ";
+//            if (lexemeVector.size() == 0) cout << "Empty";
+//            else printSVector(&lexemeVector);
+//            lexemeVector.push_back(currentLexeme);
+//            cout << "\nLexemeVector after: ";
+//            printSVector(&lexemeVector);
+//            cout << endl;
+//            currentLexeme = "";
+//            if (currentLexeme.size() != 0) cout << "ERROR ERROR ERROR DID NOT MAKE LEXEME EMPTY FOR SOME REASON";
+//                }
+//
+//            cout << "\nMoving On\n --------------------------";
+//            continue;
+//        }
+//
+//        cout << "\nThe state is: " << currentState;
+//        cout << "\nThe index is: " << currentIndex;
+//        cout << "\nInput: " << tokenString[currentIndex];
+//        cout << "\nPutting that into FSM";
+//        currentState = nextState(tokenString[currentIndex], currentIndex);
+//        cout << "\nNow the state is: " << currentState;
+//        // analyze the state
+//        if (!isspace(tokenString[currentIndex])){
+//        cout << "\nWe are adding this input to the currentLexeme.";
+//        cout << "\ncurrentLexeme before: " << currentLexeme;
+//        currentLexeme.push_back(tokenString[i]);
+//        cout << "\ncurrentLexeme after: " << currentLexeme << endl;
+//        }
+//
+//
+//
+//    currentIndex++;
+//        cout << "\nMoving On\n --------------------------";
     }
 //    cout << "\nInput: " << tokenString[currentIndex];
 //    cout << "\nPutting that into FSM";
@@ -196,7 +224,7 @@ void fillLexemeVector () {
     
     
     
-}
+
 
 
 void initKeywordsVec () {
