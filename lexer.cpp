@@ -51,7 +51,6 @@ ofstream outputFile;
 
 int main( int argc, const char * argv[] ) {
 
-
     handleFile (argc, argv);
     removeComments(&tokenString);
     fillLexemeVector();
@@ -79,7 +78,6 @@ void fillLexemeVector () {
                     // if its a separator or operator, add currentLexeme to lexemeVector
                     lexemeVector.push_back(currentLexeme);
                     currentLexeme = "";
-
                 }
                 currentLexeme.push_back(tokenStrPos);
             }
@@ -96,8 +94,6 @@ void fillLexemeVector () {
             currentIndex++;
         }
     }
-
-
 }
 
 void getOutput () {
@@ -111,26 +107,26 @@ void getOutput () {
                 //print it as OPERATOR\T\T=\t\t\t\ it
                 cout << endl;
                 cout << "OPERATOR\t\t = \t\t" << *it;
-                outputFile << "OPERATOR\t\t = \t\t" << *it << endl;
+                outputFile << "OPERATOR\t = \t" << *it << endl;
             }
             // if it is a separator
             if (isSeparator(it->at(0))) {
                 cout << endl;
                 cout << "SEPARATOR\t\t = \t\t" << *it;
-                outputFile << "SEPARATOR\t\t = \t\t" << *it << endl;
+                outputFile << "SEPARATOR\t = \t\t" << *it << endl;
             }
         }
         else {
             if (isKeyword(*it)) {
                 cout << endl;
                 cout << "KEYWORD\t\t\t = \t\t" << *it;
-                outputFile << "KEYWORD\t\t\t = \t\t" << *it << endl;
+                outputFile << "KEYWORD\t\t = \t\t" << *it << endl;
             }
             else {
                 if (it->size() != 0) {
                     cout << endl;
                     cout << "IDENTIFIER\t\t = \t\t" << *it;
-                    outputFile << "IDENTIFIER\t\t\t = \t\t" << *it << endl;
+                    outputFile << "IDENTIFIER\t = \t\t" << *it << endl;
                 }//end if
             }//end else
         }//end else
@@ -166,7 +162,7 @@ void handleFile (int ac, const char * av[]) {
         }
 
         outputFile.open("output_" + filename);
-        outputFile << "\nTOKENS\t\t\t\t\t" << "Lexemes\n" << endl;
+        outputFile << "\nTOKENS\t\t\t\t" << "Lexemes\n" << endl;
 
     }//end if
     else {
