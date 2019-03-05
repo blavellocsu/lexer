@@ -32,37 +32,15 @@ const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", "
 const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"}; //don't need anymore
 
 void removeComments(string *l); //completed
-void printCharVector (vector <char> * v); //completed
 bool isKeyword(string s);
 bool isIdentifier(string s);
 bool isSeparator (char c); //completed
 bool isOperator (char c); //completed
-void testIdentifyingChars (string * s); //completed
-bool finalStateReached ();
 void printSVector (vector <string> * v);
-void addToLexeme ();
 void handleFile (int ac, const char * av[]);
-void runTests ();
-void initKeywordsVec ();
 void fillLexemeVector();
-void removeSpaces ();
 void getOutput ();
-void seeASCIIofChars ();
-
-
 int nextState (char theInput, int index);
-
-
-vector<string> keywords;
-vector <char> alphaVector;
-vector <char> sepVector;
-vector <char> opVector;
-vector <char> digitVector;
-vector <string> keywordVector;
-
-
-
-
 
 
 string currentLexeme;
@@ -78,21 +56,12 @@ string tokenString;
 
 int main( int argc, const char * argv[] ) {
     
-    char currentChar;
     
     handleFile (argc, argv);
     removeComments(&tokenString);
-    //    seeASCIIofChars ();
-    
-    runTests();
     fillLexemeVector();
-    //    removeSpaces();
-    
     cout << "------------------------" << endl;
-    printSVector(&lexemeVector);
-    //
     getOutput();
-    
     cout << endl;
     
     return 0;
@@ -103,18 +72,11 @@ int main( int argc, const char * argv[] ) {
 
 void fillLexemeVector () {
     for (int i = 0; i < tokenString.size()+1 ; i++) {
-        cout << "\nCurrent State: " << currentState;
-        cout << "\nCurrent Lexeme: " << currentLexeme;
-        cout << "\nInput" << tokenString[currentIndex];
         
-        cout << "\nLexeme Vector Size: " << lexemeVector.size();
-        cout << "\nLexeme Vector: ";
-        printSVector(&lexemeVector);
         
         //check state
         currentState = nextState(tokenString[currentIndex], currentIndex);
         if (currentState == 3) {
-            cout << "\nAccepting";
             // make sure it is not a space
             if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9){
                 
@@ -130,7 +92,6 @@ void fillLexemeVector () {
             
             currentState = 1;
             currentIndex++;
-            cout << "\nclearing lexeme";
             currentLexeme = "";
             
         }
@@ -182,39 +143,6 @@ void getOutput () {
 
 
 
-
-void seeASCIIofChars () {
-    
-    for (int i = 0; i < tokenString.length(); i++) {
-        cout << "\nCharacter: " << tokenString[i] << " ASCII: " << int(tokenString[i]);
-    }
-    
-}
-
-
-
-
-
-
-void initKeywordsVec () {
-    
-    //initializeKeywordsVector
-    keywords.push_back("int");
-    keywords.push_back("float");
-    keywords.push_back("bool");
-    keywords.push_back("if");
-    keywords.push_back("else");
-    keywords.push_back("then");
-    keywords.push_back("do");
-    keywords.push_back("while");
-    keywords.push_back("whileend");
-    keywords.push_back("doend");
-    keywords.push_back("for");
-    keywords.push_back("and");
-    keywords.push_back("or");
-    keywords.push_back("function");
-    
-}
 
 
 void handleFile (int ac, const char * av[]) {
@@ -285,10 +213,6 @@ void removeComments(string *l) {
 
 
 bool isKeyword(string s) {
-    //  for (vector<string>::iterator it = keywords.begin(); it != keywords.end(); it++) {
-    //    if (s == *it)
-    //      return true;
-    //  } return false;
     if (s == "int" || s == "float" || s == "bool" || s == "if" || s == "else" || s == "then" || s == "do" || s == "while" || s == "whileend" || s == "do" || s == "doend" || s == "for" || s == "and" || s == "or" || s == "function") {
         return true;
     } else return false;
@@ -318,18 +242,6 @@ bool isOperator (char c) {
 }
 
 
-
-
-
-void printCharVector (vector <char> * v) {
-    
-    for (newCharIterator it = v->begin(); it != v->end(); ++it) {
-        
-        cout << " " << *it << " ";
-        
-    }
-    
-}
 
 void printSVector (vector <string> * v) {
     
@@ -376,10 +288,4 @@ int nextState (char theInput, int index) {
 
 
 
-
-void runTests() {
-    
-    
-    
-}
 
