@@ -82,19 +82,19 @@ int main( int argc, const char * argv[] ) {
     
     handleFile (argc, argv);
     removeComments(&tokenString);
-//    seeASCIIofChars ();
-
+    //    seeASCIIofChars ();
+    
     runTests();
     fillLexemeVector();
-//    removeSpaces();
-
+    //    removeSpaces();
+    
     cout << "------------------------" << endl;
     printSVector(&lexemeVector);
-//
+    //
     getOutput();
     
     cout << endl;
-
+    
     return 0;
 } //end main
 
@@ -103,38 +103,46 @@ int main( int argc, const char * argv[] ) {
 
 void fillLexemeVector () {
     for (int i = 0; i < tokenString.size()+1 ; i++) {
-    cout << "\nCurrent State: " << currentState;
-    cout << "\nCurrent Lexeme: " << currentLexeme;
-    cout << "\nInput" << tokenString[currentIndex];
-    
-    cout << "\nLexeme Vector Size: " << lexemeVector.size();
-    cout << "\nLexeme Vector: ";
-    printSVector(&lexemeVector);
-    
-    //check state
-    currentState = nextState(tokenString[currentIndex], currentIndex);
-    if (currentState == 3) {
-        cout << "\nAccepting";
-        // make sure it is not a space
-        if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9)
-        currentLexeme.push_back(tokenString[currentIndex]);
-        lexemeVector.push_back(currentLexeme);
-    
-        currentState = 1;
-        currentIndex++;
-        cout << "\nclearing lexeme";
-        currentLexeme = "";
+        cout << "\nCurrent State: " << currentState;
+        cout << "\nCurrent Lexeme: " << currentLexeme;
+        cout << "\nInput" << tokenString[currentIndex];
         
-    }
-    else {
-        if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9)
-        currentLexeme.push_back(tokenString[currentIndex]);
-        currentIndex++;
-    }
+        cout << "\nLexeme Vector Size: " << lexemeVector.size();
+        cout << "\nLexeme Vector: ";
+        printSVector(&lexemeVector);
+        
+        //check state
+        currentState = nextState(tokenString[currentIndex], currentIndex);
+        if (currentState == 3) {
+            cout << "\nAccepting";
+            // make sure it is not a space
+            if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9){
+                
+                if (isSeparator(tokenString[currentIndex]) || isOperator(tokenString[currentIndex])){
+                    // if its a separator or operator, add currentLexeme to lexemeVector
+                    lexemeVector.push_back(currentLexeme);
+                    currentLexeme = "";
+                    
+                }
+                currentLexeme.push_back(tokenString[currentIndex]);
+            }
+            lexemeVector.push_back(currentLexeme);
+            
+            currentState = 1;
+            currentIndex++;
+            cout << "\nclearing lexeme";
+            currentLexeme = "";
+            
+        }
+        else {
+            if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9)
+                currentLexeme.push_back(tokenString[currentIndex]);
+            currentIndex++;
+        }
     }
     
     
-    }
+}
 
 void getOutput () {
     
@@ -144,7 +152,7 @@ void getOutput () {
         if (it->size() == 1) {
             // if it is an operator
             if (isOperator(it->at(0))) {
-               //print it as OPERATOR\T\T=\t\t\t\ it
+                //print it as OPERATOR\T\T=\t\t\t\ it
                 cout << endl;
                 cout << "OPERATOR\t\t = \t\t" << *it;
             }
@@ -161,8 +169,8 @@ void getOutput () {
             }
             else {
                 if (it->size() != 0){
-                cout << endl;
-                cout << "IDENTIFIER\t\t = \t\t" << *it;
+                    cout << endl;
+                    cout << "IDENTIFIER\t\t = \t\t" << *it;
                 }
             }
             
@@ -266,28 +274,28 @@ void removeComments(string *l) {
             }
             // if we got here, that means we found the next !
             int whereCommEnd = j;
-
+            
             // now we erase the substring between our two markers
             l->erase(whereCommStart, whereCommEnd-whereCommStart+1);
             len = l->length();
         }//end if '!'
-
+        
     }//end for
 }//end function
 
 
 bool isKeyword(string s) {
-//  for (vector<string>::iterator it = keywords.begin(); it != keywords.end(); it++) {
-//    if (s == *it)
-//      return true;
-//  } return false;
+    //  for (vector<string>::iterator it = keywords.begin(); it != keywords.end(); it++) {
+    //    if (s == *it)
+    //      return true;
+    //  } return false;
     if (s == "int" || s == "float" || s == "bool" || s == "if" || s == "else" || s == "then" || s == "do" || s == "while" || s == "whileend" || s == "do" || s == "doend" || s == "for" || s == "and" || s == "or" || s == "function") {
         return true;
     } else return false;
 }
 
 bool isIdentifier(string s) {
-  return false;
+    return false;
 }
 
 bool isSeparator (char c) {
@@ -300,13 +308,13 @@ bool isSeparator (char c) {
 }
 
 bool isOperator (char c) {
-
+    
     if (c == '*' || c == '+' || c == '-' || c == '=' || c == '/' || c == '>' || c == '<' || c == '%') {
         return true;
     } else {
         return false;
     }
-
+    
 }
 
 
@@ -314,13 +322,13 @@ bool isOperator (char c) {
 
 
 void printCharVector (vector <char> * v) {
-
+    
     for (newCharIterator it = v->begin(); it != v->end(); ++it) {
-
+        
         cout << " " << *it << " ";
-
+        
     }
-
+    
 }
 
 void printSVector (vector <string> * v) {
@@ -338,41 +346,40 @@ int nextState (char theInput, int index) {
     //returns the state of the machine at the current index
     //returns -1 if the char is not allowed
     
-
+    
     if (isalpha(theInput)) {
-            return fsm[currentState-1][0];
-        }
-     if (isdigit(theInput)) {
-            return fsm[currentState-1][1];
-        }
-     if (theInput   == '$') {
-            return fsm[currentState-1][2];
-        }
-     if (isSeparator(theInput  )) {
-            return fsm[currentState-1][3];
-        }
-     if (isOperator(theInput  )) {
-            return fsm [currentState-1][4];
-        }
-     if (theInput   == '.') {
-            // it is not going to reach this because '.' is part of the separator group. fix this later
-            return fsm [currentState-1][5];
-        }
+        return fsm[currentState-1][0];
+    }
+    if (isdigit(theInput)) {
+        return fsm[currentState-1][1];
+    }
+    if (theInput   == '$') {
+        return fsm[currentState-1][2];
+    }
+    if (isSeparator(theInput  )) {
+        return fsm[currentState-1][3];
+    }
+    if (isOperator(theInput  )) {
+        return fsm [currentState-1][4];
+    }
+    if (theInput   == '.') {
+        // it is not going to reach this because '.' is part of the separator group. fix this later
+        return fsm [currentState-1][5];
+    }
     
     else return -1;
-    }
+}
 
 
 
 
-    
+
 
 
 
 void runTests() {
-
+    
     
     
 }
-
 
