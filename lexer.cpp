@@ -46,6 +46,7 @@ void runTests ();
 void initKeywordsVec ();
 void fillLexemeVector();
 void removeSpaces ();
+void getOutput ();
 
 
 int nextState (char theInput, int index);
@@ -83,10 +84,12 @@ int main( int argc, const char * argv[] ) {
 
     runTests();
     fillLexemeVector();
-    removeSpaces();
+   // removeSpaces();
     
     cout << "------------------------" << endl;
     printSVector(&lexemeVector);
+    
+    getOutput();
 
     return 0;
 } //end main
@@ -120,79 +123,40 @@ void fillLexemeVector () {
         currentLexeme.push_back(tokenString[currentIndex]);
         currentIndex++;
     }
-                                   }
-    
-                                   
-    
-    //    // test parameters
-//    cout << "To begin, the currentLexeme string is: " << currentLexeme << " with size: " << currentLexeme.length()
-//    << " \nthe Lexeme Vector " << " with size: " << lexemeVector.size()
-//    << " \nthe Current State is: " << currentState << " \nThe current index is: " << currentIndex << endl;
-//
-//
-//    for (int i = 0; i < 12; i++) {
-//
-//        if (currentState == 3) {
-//            cout << "\nWe have reached an accepting state.\nChanging current state to 1.";
-//            currentState = 1;
-//            cout << "\nSize of currentLexeme: " << currentLexeme.size();
-//            cout << "\nThis is the currentLexeme: " << currentLexeme;
-//            if (currentLexeme.size() == 1 && isspace(currentLexeme[0])) {
-//                cout << "\nBecause this lexeme is just a space, we are not adding it to the lexemeVector";
-//            } else {
-//            cout << "\nAdding this lexeme: " << currentLexeme << " to lexeme vector.\nSkipping Rest of loop.";
-//            cout << "\nLexemeVector before: ";
-//            if (lexemeVector.size() == 0) cout << "Empty";
-//            else printSVector(&lexemeVector);
-//            lexemeVector.push_back(currentLexeme);
-//            cout << "\nLexemeVector after: ";
-//            printSVector(&lexemeVector);
-//            cout << endl;
-//            currentLexeme = "";
-//            if (currentLexeme.size() != 0) cout << "ERROR ERROR ERROR DID NOT MAKE LEXEME EMPTY FOR SOME REASON";
-//                }
-//
-//            cout << "\nMoving On\n --------------------------";
-//            continue;
-//        }
-//
-//        cout << "\nThe state is: " << currentState;
-//        cout << "\nThe index is: " << currentIndex;
-//        cout << "\nInput: " << tokenString[currentIndex];
-//        cout << "\nPutting that into FSM";
-//        currentState = nextState(tokenString[currentIndex], currentIndex);
-//        cout << "\nNow the state is: " << currentState;
-//        // analyze the state
-//        if (!isspace(tokenString[currentIndex])){
-//        cout << "\nWe are adding this input to the currentLexeme.";
-//        cout << "\ncurrentLexeme before: " << currentLexeme;
-//        currentLexeme.push_back(tokenString[i]);
-//        cout << "\ncurrentLexeme after: " << currentLexeme << endl;
-//        }
-//
-//
-//
-//    currentIndex++;
-//        cout << "\nMoving On\n --------------------------";
     }
-//    cout << "\nInput: " << tokenString[currentIndex];
-//    cout << "\nPutting that into FSM";
-//    currentState = nextState(tokenString[currentIndex], currentIndex);
-//    cout << "\nNow the state is: " << currentState;
-//    currentIndex++;
-//    cout << "\nIndex: " << currentIndex;
-//    cout << "\nInput: " << tokenString[currentIndex];
-//    cout << "\nPutting that into FSM";
-//    currentState = nextState(tokenString[currentIndex], currentIndex);
-//    cout << "\nNow the state is: " << currentState;
-//    currentIndex++;
-//    cout << "\nIndex: " << currentIndex;
-//    cout << "\nInput: " << tokenString[currentIndex];
-//    cout << "\nPutting that into FSM";
-//    currentState = nextState(tokenString[currentIndex], currentIndex);
-//    cout << "\nNow the state is: " << currentState;
-//    currentIndex++;
     
+    
+    }
+
+void getOutput () {
+    
+    for (vector<string>::iterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
+       // if the size is == 1, it must be an operator or a seperator
+        if (it->size() == 1) {
+            // if it is an operator
+            if (isOperator(it->at(0))) {
+               //print it as OPERATOR\T\T=\t\t\t\ it
+                cout << "OPERATOR\t\t = \t\t" << *it << endl;
+            }
+            // if it is a separator
+            if (isSeparator(it->at(0))) {
+                cout << "SEPARATOR\t\t = \t\t" << *it << endl;
+            }
+        }
+        else {
+            if (isKeyword(*it)) {
+                cout << "KEYWORD\t\t\t = \t\t" << *it << endl;
+            }
+            else {
+                cout << "IDENTIFIER\t\t = \t\t" << *it << endl;
+            }
+            
+            
+        }
+    }
+    
+}
+
     
     
     
@@ -215,37 +179,7 @@ void removeSpaces () {
     
 }
     
-    
-    
-//    for (int i = 0; i < tokenString.length(); i++ ) {
-//    //first check if it is in the dead state
-//    if (currentState == 6) {
-//        currentState = 1;
-//        currentIndex++;
-//    }
-//    else if (currentState == 3) {
-//        //if it is, add the currentLexeme to the lexemeVector
-//        cout << "\nadding " << currentLexeme << " to the lexemeVector." << endl;
-//        lexemeVector.push_back(currentLexeme);
-//        //change the state to 1
-//        currentState = 1;
-//    }
-//    else {
-//        // if it is not, we are going to take the next input
-//        char input = tokenString[currentIndex];
-//        // now lets get the next state of the machine based on this input and current state;
-//        currentState = nextState(input, currentIndex);
-//        currentIndex++;
-//
-//    }
-//    }
-//
-//    cout << "\n\nNow the lexeme vector has size: " << lexemeVector.size();
-//    cout << "\nLexeme vector: ";
-//    printSVector(&lexemeVector);
-    
-    
-    
+
 
 
 
@@ -341,8 +275,7 @@ bool isKeyword(string s) {
   for (vector<string>::iterator it = keywords.begin(); it != keywords.end(); it++) {
     if (s == *it)
       return true;
-  }
-  return false;
+  } return false;
 }
 
 bool isIdentifier(string s) {
