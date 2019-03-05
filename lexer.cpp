@@ -10,7 +10,7 @@
 #include <ctype.h>
 #define newCharIterator vector<char>::iterator // just to make the code a little easier to read
 #define newStringIterator vector<string>::iterator
-
+#define tokenStrPos tokenString[currentIndex]
 
 using namespace std;
 
@@ -32,7 +32,7 @@ int fsm[6][6] = {
 
 void removeComments(string *l);
 bool isKeyword(string s);
-bool isSeparator (char c); 
+bool isSeparator (char c);
 bool isOperator (char c);
 void printSVector (vector <string> * v);
 void handleFile (int ac, const char * av[]);
@@ -73,18 +73,18 @@ void fillLexemeVector () {
         
         
         //check state
-        currentState = nextState(tokenString[currentIndex], currentIndex);
+        currentState = nextState(tokenStrPos, currentIndex);
         if (currentState == 3) {
             // make sure it is not a space
-            if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9) {
+            if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9) {
                 
-                if (isSeparator(tokenString[currentIndex]) || isOperator(tokenString[currentIndex])) {
+                if (isSeparator(tokenStrPos) || isOperator(tokenStrPos)) {
                     // if its a separator or operator, add currentLexeme to lexemeVector
                     lexemeVector.push_back(currentLexeme);
                     currentLexeme = "";
                     
                 }
-                currentLexeme.push_back(tokenString[currentIndex]);
+                currentLexeme.push_back(tokenStrPos);
             }
             lexemeVector.push_back(currentLexeme);
             
@@ -94,8 +94,8 @@ void fillLexemeVector () {
             
         }
         else {
-            if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9)
-                currentLexeme.push_back(tokenString[currentIndex]);
+            if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9)
+                currentLexeme.push_back(tokenStrPos);
             currentIndex++;
         }
     }
@@ -105,7 +105,7 @@ void fillLexemeVector () {
 
 void getOutput () {
     
-    for (vector<string>::iterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
+    for (newStringIterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
         
         // if the size is == 1, it must be an operator or a seperator
         if (it->size() == 1) {
