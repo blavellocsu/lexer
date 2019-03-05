@@ -19,7 +19,7 @@ using namespace std;
 
 // finite state machine
 int fsm[6][6] = {
-    2,4,6,1,3,3,
+    2,4,6,3,3,3,
     2,2,2,3,3,3,
     1,1,1,1,1,1,
     6,4,6,3,3,5,
@@ -96,29 +96,47 @@ void fillLexemeVector () {
     << " \nthe Current State is: " << currentState << " \nThe current index is: " << currentIndex << endl;
     
 
-    for (int i = 0; i < 20; i++) {
-    cout << "\nInput: " << tokenString[currentIndex];
-    cout << "\nPutting that into FSM";
-    currentState = nextState(tokenString[currentIndex], currentIndex);
-        cout << "\nWe are adding this input to the currentLexeme.";
-        cout << "\ncurrentLexeme before: " << currentLexeme;
-        currentLexeme.push_back(tokenString[i]);
-        cout << "\ncurrentLexeme after: " << currentLexeme;
-    
+    for (int i = 0; i < 12; i++) {
+        
         if (currentState == 3) {
-            cout << "We have reached an accepting state.\nChanging current state to 1." <<
-            "\nAdding this lexeme to lexeme vector.\nSkipping Rest of loop.";
+            cout << "\nWe have reached an accepting state.\nChanging current state to 1.";
+            if (currentLexeme.size() == 1 && isspace(currentLexeme[0])) {
+                cout << "\nBecause this lexeme is just a space, we are not adding it to the lexemeVector";
+            } else {
+            cout << "\nAdding this lexeme: " << currentLexeme << " to lexeme vector.\nSkipping Rest of loop.";
             cout << "\nLexemeVector before: ";
-            printSVector(&lexemeVector);
+            if (lexemeVector.size() == 0) cout << "Empty";
+            else printSVector(&lexemeVector);
             lexemeVector.push_back(currentLexeme);
             cout << "\nLexemeVector after: ";
             printSVector(&lexemeVector);
+            cout << endl;
+            currentLexeme = "";
+            if (currentLexeme.size() != 0) cout << "ERROR ERROR ERROR DID NOT MAKE LEXEME EMPTY FOR SOME REASON";
+                }
             
+            cout << "\nMoving On\n --------------------------";
             continue;
         }
-    cout << "\nNow the state is: " << currentState;
+        
+        cout << "\nThe state is: " << currentState;
+        cout << "\nThe index is: " << currentIndex;
+        cout << "\nInput: " << tokenString[currentIndex];
+        cout << "\nPutting that into FSM";
+        currentState = nextState(tokenString[currentIndex], currentIndex);
+        cout << "\nNow the state is: " << currentState;
+        // analyze the state
+        if (!isspace(tokenString[currentIndex])){
+        cout << "\nWe are adding this input to the currentLexeme.";
+        cout << "\ncurrentLexeme before: " << currentLexeme;
+        currentLexeme.push_back(tokenString[i]);
+        cout << "\ncurrentLexeme after: " << currentLexeme << endl;
+        }
+    
+        
+    
     currentIndex++;
-    cout << "\nIndex: " << currentIndex;
+        cout << "\nMoving On\n --------------------------";
     }
 //    cout << "\nInput: " << tokenString[currentIndex];
 //    cout << "\nPutting that into FSM";
