@@ -33,7 +33,6 @@ const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"}; //don't nee
 
 void removeComments(string *l); //completed
 bool isKeyword(string s);
-bool isIdentifier(string s);
 bool isSeparator (char c); //completed
 bool isOperator (char c); //completed
 void printSVector (vector <string> * v);
@@ -78,9 +77,9 @@ void fillLexemeVector () {
         currentState = nextState(tokenString[currentIndex], currentIndex);
         if (currentState == 3) {
             // make sure it is not a space
-            if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9){
+            if (int(tokenString[currentIndex]) != 13 && int(tokenString[currentIndex]) != 10 && int(tokenString[currentIndex]) != 32 && int(tokenString[currentIndex]) != 9) {
                 
-                if (isSeparator(tokenString[currentIndex]) || isOperator(tokenString[currentIndex])){
+                if (isSeparator(tokenString[currentIndex]) || isOperator(tokenString[currentIndex])) {
                     // if its a separator or operator, add currentLexeme to lexemeVector
                     lexemeVector.push_back(currentLexeme);
                     currentLexeme = "";
@@ -129,13 +128,11 @@ void getOutput () {
                 cout << "KEYWORD\t\t\t = \t\t" << *it;
             }
             else {
-                if (it->size() != 0){
+                if (it->size() != 0) {
                     cout << endl;
                     cout << "IDENTIFIER\t\t = \t\t" << *it;
                 }
             }
-            
-            
         }
     }
     
@@ -175,7 +172,8 @@ void handleFile (int ac, const char * av[]) {
         }
         
         
-    } else {
+    }
+    else {
         cout << "File Error: Could not open file.\n" << usage << endl;
         exit(1);
     }
@@ -215,18 +213,17 @@ void removeComments(string *l) {
 bool isKeyword(string s) {
     if (s == "int" || s == "float" || s == "bool" || s == "if" || s == "else" || s == "then" || s == "do" || s == "while" || s == "whileend" || s == "do" || s == "doend" || s == "for" || s == "and" || s == "or" || s == "function") {
         return true;
-    } else return false;
+    }
+    else return false;
 }
 
-bool isIdentifier(string s) {
-    return false;
-}
 
 bool isSeparator (char c) {
     if (c == '\'' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']' || c == ',' ||
         c == '.' || c == ':' || c == ';' || c == '!' || isspace(c)) {
         return true;
-    } else {
+    }
+    else {
         return false;
     }
 }
@@ -235,7 +232,8 @@ bool isOperator (char c) {
     
     if (c == '*' || c == '+' || c == '-' || c == '=' || c == '/' || c == '>' || c == '<' || c == '%') {
         return true;
-    } else {
+    }
+    else {
         return false;
     }
     
