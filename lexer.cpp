@@ -100,6 +100,8 @@ void fillLexemeVector () {
         
         if (currentState == 3) {
             cout << "\nWe have reached an accepting state.\nChanging current state to 1.";
+            cout << "\nSize of currentLexme: " << currentLexeme.size();
+            cout << "\nThis is the currentLexeme: " << currentLexeme;
             if (currentLexeme.size() == 1 && isspace(currentLexeme[0])) {
                 cout << "\nBecause this lexeme is just a space, we are not adding it to the lexemeVector";
             } else {
