@@ -92,6 +92,8 @@ int main( int argc, const char * argv[] ) {
     printSVector(&lexemeVector);
 //
     getOutput();
+    
+    cout << endl;
 
     return 0;
 } //end main
@@ -137,24 +139,31 @@ void fillLexemeVector () {
 void getOutput () {
     
     for (vector<string>::iterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
-       // if the size is == 1, it must be an operator or a seperator
+        
+        // if the size is == 1, it must be an operator or a seperator
         if (it->size() == 1) {
             // if it is an operator
             if (isOperator(it->at(0))) {
                //print it as OPERATOR\T\T=\t\t\t\ it
-                cout << "OPERATOR\t\t = \t\t" << *it << endl;
+                cout << endl;
+                cout << "OPERATOR\t\t = \t\t" << *it;
             }
             // if it is a separator
             if (isSeparator(it->at(0))) {
-                cout << "SEPARATOR\t\t = \t\t" << *it << endl;
+                cout << endl;
+                cout << "SEPARATOR\t\t = \t\t" << *it;
             }
         }
         else {
             if (isKeyword(*it)) {
-                cout << "KEYWORD\t\t\t = \t\t" << *it << endl;
+                cout << endl;
+                cout << "KEYWORD\t\t\t = \t\t" << *it;
             }
             else {
-                cout << "IDENTIFIER\t\t = \t\t" << *it << endl;
+                if (it->size() != 0){
+                cout << endl;
+                cout << "IDENTIFIER\t\t = \t\t" << *it;
+                }
             }
             
             
@@ -353,96 +362,17 @@ int nextState (char theInput, int index) {
     else return -1;
     }
 
-// ==========================================================================
-// Not using right now
 
-//void addToLexeme () {
-//
-//        nextState(tokenString);
-//        cout << "adding " << tokenString.at(currentIndex) << " to our lexeme" << endl;
-//        currentLexeme.push_back(tokenString.at(currentIndex));
-//
-//}
 
-//bool finalStateReached () {
-//    if (currentState == 3)
-//        return false;
-//    else return true;
-//}
 
     
 
 
 
 void runTests() {
-    // =================================================================================
-    // Testing Section
-    
-    //    for (int i = 0; i < tokenString.length(); i++) {
-    //
-    //    cout << "Current state = " << currentState << endl;
-    //    currentState = nextState(tokenString);
-    //
-    //    }
-    //    for (int m = 0; m < 4; m++) {
-    //        for (int t = 0; t < 10; t++) {
-    //            addToLexeme();
-    //            cout << "This is our lexeme" << currentLexeme << endl;
-    //            if (finalStateReached()) {
-    //                cout << "our first lexeme has size: " << currentLexeme.length() << " is done: " << currentLexeme << endl;
-    //                lexemeVector.push_back(currentLexeme);
-    //                currentLexeme = "";
-    //                break;
-    //            }
-    //        }
-    //    }
-    
-    //    cout << "\nAlpha chars:"; printCharVector(&alphaVector); cout << endl;
-    //    cout << "Operator chars:"; printCharVector(&opVector); cout << endl;
-    //    cout << "Seperator chars:"; printCharVector(&sepVector); cout << endl;
-    //    cout << "Digit chars:"; printCharVector(&digitVector); cout << endl;
-    
-    //Test Print to see if it completed
-    
-    //    cout << "This is our vector: ";
-    //    printSVector(&lexemeVector);
-    //    cout << "\nEnd Program\n";
-    
-    
-    // string is at state 1 and index 0
-    // gets next character and its state changes
-    // is it at state 6?
-    // if yes, go to state 1
-    // if no, then store that character in the currentLexeme string
-    // increase index by 1
-    // is it at state 3?
-    // if yes, add currentLexeme to lexemeVector
-    // if no, repeat
-    
-    //    while (currentIndex < tokenString.length()) {
-    //        cout << "Index: " << currentIndex << ", ";
-    //        cout << "Token: " << tokenString.at(currentIndex) << endl;
-    //        currentIndex++;
-    //
-    //    }
-    
+
     
     
 }
 
-void testIdentifyingChars (string * s) {
-    for (int i = 0; i < s->length(); i++) {
-        
-        if (isalpha(s->at(i)) || s->at(i) == ' ') {
-            alphaVector.push_back(s->at(i));
-        } if (isdigit(s->at(i))) {
-            digitVector.push_back(s->at(i));
-        } if (isOperator(s->at(i))) {
-            opVector.push_back(s->at(i));
-        } if (isSeparator(s->at(i))) {
-            sepVector.push_back(s->at(i));
-        }
-        
-    }
-}
 
