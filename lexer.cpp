@@ -28,13 +28,12 @@ int fsm[6][6] = {
 };
 
 
-const string separators[] = {"'", "(", ")", "{", "}", "[", "]", ",", ".", ":", ";", "!"}; //don't need anymore
-const string operators[] = {"*", "+", "-", "=", "/", ">", "<", "%"}; //don't need anymore
 
-void removeComments(string *l); //completed
+
+void removeComments(string *l);
 bool isKeyword(string s);
-bool isSeparator (char c); //completed
-bool isOperator (char c); //completed
+bool isSeparator (char c); 
+bool isOperator (char c);
 void printSVector (vector <string> * v);
 void handleFile (int ac, const char * av[]);
 void fillLexemeVector();
