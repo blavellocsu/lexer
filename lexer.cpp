@@ -27,9 +27,6 @@ int fsm[6][6] = {
     1,1,1,1,1,1
 };
 
-
-
-
 void removeComments(string *l);
 bool isKeyword(string s);
 bool isSeparator (char c);
@@ -46,22 +43,22 @@ vector <string> lexemeVector;
 int currentState = 1;
 int currentIndex = 0;
 string tokenString;
-
+ofstream outputFile;
 
 
 //==========================================================================================
 //==========================================================================================
 
 int main( int argc, const char * argv[] ) {
-    
-    
+
+
     handleFile (argc, argv);
     removeComments(&tokenString);
     fillLexemeVector();
     cout << "------------------------" << endl;
     getOutput();
     cout << endl;
-    
+
     return 0;
 } //end main
 
@@ -70,28 +67,28 @@ int main( int argc, const char * argv[] ) {
 
 void fillLexemeVector () {
     for (int i = 0; i < tokenString.size()+1 ; i++) {
-        
-        
+
+
         //check state
         currentState = nextState(tokenStrPos, currentIndex);
         if (currentState == 3) {
             // make sure it is not a space
             if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9) {
-                
+
                 if (isSeparator(tokenStrPos) || isOperator(tokenStrPos)) {
                     // if its a separator or operator, add currentLexeme to lexemeVector
                     lexemeVector.push_back(currentLexeme);
                     currentLexeme = "";
-                    
+
                 }
                 currentLexeme.push_back(tokenStrPos);
             }
             lexemeVector.push_back(currentLexeme);
-            
+
             currentState = 1;
             currentIndex++;
             currentLexeme = "";
-            
+
         }
         else {
             if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9)
@@ -99,14 +96,14 @@ void fillLexemeVector () {
             currentIndex++;
         }
     }
-    
-    
+
+
 }
 
 void getOutput () {
-    
+
     for (newStringIterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
-        
+
         // if the size is == 1, it must be an operator or a seperator
         if (it->size() == 1) {
             // if it is an operator
@@ -134,7 +131,7 @@ void getOutput () {
             }
         }
     }
-    
+
 }
 
 
@@ -149,28 +146,28 @@ void handleFile (int ac, const char * av[]) {
         cout << "Invalid Arguments.\n" << usage << endl;
         exit(1);
     }
-    
+
     //File handling
     //read filename in from command line argument
     //see top of file for correct command line usage
     string filename = av[1];
-    
-    
+
+
     //Create filesream
     ifstream file(filename);
     //check to see if file opened correctly
     if (file.is_open()) {
         cout << "File opened successfully." << endl;
-        
+
         // read content of txt file (including white spaces) into a string
         string contents((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-        
-        
+
+
         for (int i = 0; i < contents.length(); i++) {
             tokenString.push_back(contents[i]);
         }
-        
-        
+
+
     }
     else {
         cout << "File Error: Could not open file.\n" << usage << endl;
@@ -199,12 +196,12 @@ void removeComments(string *l) {
             }
             // if we got here, that means we found the next !
             int whereCommEnd = j;
-            
+
             // now we erase the substring between our two markers
             l->erase(whereCommStart, whereCommEnd-whereCommStart+1);
             len = l->length();
         }//end if '!'
-        
+
     }//end for
 }//end function
 
@@ -228,34 +225,34 @@ bool isSeparator (char c) {
 }
 
 bool isOperator (char c) {
-    
+
     if (c == '*' || c == '+' || c == '-' || c == '=' || c == '/' || c == '>' || c == '<' || c == '%') {
         return true;
     }
     else {
         return false;
     }
-    
+
 }
 
 
 
 void printSVector (vector <string> * v) {
-    
+
     for (newStringIterator it = v->begin(); it != v->end(); ++it) {
-        
+
         cout << *it;
-        
+
     }
-    
+
 }
 
 
 int nextState (char theInput, int index) {
     //returns the state of the machine at the current index
     //returns -1 if the char is not allowed
-    
-    
+
+
     if (isalpha(theInput)) {
         return fsm[currentState-1][0];
     }
@@ -275,14 +272,6 @@ int nextState (char theInput, int index) {
         // it is not going to reach this because '.' is part of the separator group. fix this later
         return fsm [currentState-1][5];
     }
-    
+
     else return -1;
 }
-
-
-
-
-
-
-
-
