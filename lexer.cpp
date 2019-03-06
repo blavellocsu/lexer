@@ -153,10 +153,12 @@ void getOutput () {
                 cout << endl;
                 cout << "SEPARATOR\t\t = \t\t" << *it;
                 outputFile << "SEPARATOR\t = \t" << *it << endl;
+
             }
             if (isNumber(*it)) {
                 cout << endl;
                 cout << "INTEGER\t\t\t = \t\t" << *it;
+                outputFile << "INTEGER\t = \t" << *it << endl;
             }
         }
         else {
@@ -168,8 +170,10 @@ void getOutput () {
             else if (isNumber(*it)) {
                 cout << endl;
                 cout << "INTEGER\t\t\t = \t\t" << *it;
+                outputFile << "INTEGER\t = \t" << *it << endl;
             } else if (isReal(*it)) {
                 cout << "\nREAL NUMBER\t\t = \t\t" << *it;
+                outputFile << "\nREAL NUMBER\t\t = \t\t" << *it;
             }
             else {
                 if (it->size() != 0) {
