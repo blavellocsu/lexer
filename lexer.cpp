@@ -23,7 +23,7 @@ bool isSeparator (char c);
 bool isOperator (char c);
 //void printSVector (vector <string> * v);
 void handleFile (int ac, const char * av[]);
-void fillLexemeVector(int size);
+void fillLexemeVector();
 int lexer (char theInput, int index);
 
 string currentLexeme;
@@ -58,10 +58,9 @@ int fsm[10][6] = {
 int main( int argc, const char * argv[] ) {
     
     handleFile (argc, argv);
-    int theSize = tokenString.size();
     removeComments(&tokenString);
     cout << "------------------------" << endl;
-    fillLexemeVector(theSize);
+    fillLexemeVector();
     outputFile.close();
     cout << endl;
     return 0;
@@ -71,7 +70,7 @@ int main( int argc, const char * argv[] ) {
 //==========================================================================================
 
 
-void fillLexemeVector (int size) {
+void fillLexemeVector () {
     
     for (int i = 0; i < SIZE ; i++) {
         switch (currentState) {
