@@ -22,7 +22,7 @@ bool isSeparator (char c);
 bool isOperator (char c);
 //void printSVector (vector <string> * v);
 void handleFile (int ac, const char * av[]);
-void fillLexemeVector();
+void fillLexemeVector(int size);
 void getOutput ();
 int nextState (char theInput, int index);
 
@@ -60,10 +60,18 @@ int fsm[10][6] = {
 int main( int argc, const char * argv[] ) {
     
     handleFile (argc, argv);
+    cout << "Token string size before removing comments: " << tokenString.size();
+    int theSize = tokenString.size();
     removeComments(&tokenString);
+    cout << "After: " << tokenString.size();
     cout << "------------------------" << endl;
     getOutput();
-    fillLexemeVector();
+   // fillLexemeVector();
+    
+    
+    cout << tokenString;
+    
+    fillLexemeVector(theSize);
     
     outputFile.close();
     cout << endl;
@@ -77,122 +85,130 @@ int main( int argc, const char * argv[] ) {
 
 
 
-void fillLexemeVector () {
+void fillLexemeVector (int size) {
+    cout << endl << tokenString.size();
     
-    for (int i = 0; i < tokenString.size()+1 ; i++) {
-    switch (currentState) {
-        case 1:
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            ////cout << "\nNow State: " << currentState << endl;
-            if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9 && int(tokenStrPos) != 0) {
-                //cout << "\nNow State: " << currentState << endl;
-                currentLexeme.push_back(tokenString[currentIndex]);
+    for (int i = 0; i < 9999999 ; i++) {
+        switch (currentState) {
+            case 1:
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                ////cout << "\nNow State: " << currentState << endl;
+                if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9 && int(tokenStrPos) != 0) {
+                    //cout << "\nNow State: " << currentState << endl;
+                    currentLexeme.push_back(tokenString[currentIndex]);
+                    
+                }
+                currentIndex++;
                 
-            }
-            currentIndex++;
-            
-            break;
-        case 2:
-            
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            if (currentState!=3 && currentState != 9) {
-            //cout << "\nNow State: " << currentState << endl;
-            currentLexeme.push_back(tokenString[currentIndex]);
-            currentIndex++;
-            }
-            break;
-        case 3:
-            
-            if (isKeyword(currentLexeme)) {
-                cout << endl << currentLexeme << " Is Keyword" << endl;
-            }
-            else {
-            cout << endl << currentLexeme << " Is Identifier" << endl;
-            }
-            lexemeVector.push_back(currentLexeme);
-            currentLexeme = "";
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            //cout << "\nNow State: " << currentState << endl;
-
-            break;
-        case 4:
-            
-            
-            if (currentLexeme.size() > 0) {
-//                cout << "\nCurrent Lexme Size: " << currentLexeme.size();
-//                cout << "\nCurrent Lexeme: " << currentLexeme << " ASCII: " << int(currentLexeme[0]) << endl;
-                cout << endl << currentLexeme << " Is Separator" << endl;
+                break;
+            case 2:
+                
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                if (currentState!=3 && currentState != 9) {
+                    //cout << "\nNow State: " << currentState << endl;
+                    currentLexeme.push_back(tokenString[currentIndex]);
+                    currentIndex++;
+                }
+                break;
+            case 3:
+                
+                if (isKeyword(currentLexeme)) {
+                    
+                    cout << endl << "KEYWORD\t\t\t = \t\t " << currentLexeme;
+                    outputFile << endl << "KEYWORD\t\t\t = \t\t " << currentLexeme;
+                }
+                else {
+                    cout << endl << "IDENTIFIER\t\t = \t\t " << currentLexeme;
+                    outputFile << endl << "IDENTIFIER\t\t = \t\t " << currentLexeme;
+                }
                 lexemeVector.push_back(currentLexeme);
                 currentLexeme = "";
-            }
-            
-            
-            
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            //cout << "\nNow State: " << currentState << endl;
-
-            break;
-        case 5:
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            //cout << "\nNow State: " << currentState << endl;
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
                 //cout << "\nNow State: " << currentState << endl;
-            
+                
+                break;
+            case 4:
+                
+                
+                if (currentLexeme.size() > 0) {
+                    //                cout << "\nCurrent Lexme Size: " << currentLexeme.size();
+                    //                cout << "\nCurrent Lexeme: " << currentLexeme << " ASCII: " << int(currentLexeme[0]) << endl;
+                    cout << endl << "SEPARATOR\t\t = \t\t " << currentLexeme;
+                    outputFile << endl << "SEPARATOR\t\t = \t\t " << currentLexeme;
+                    lexemeVector.push_back(currentLexeme);
+                    currentLexeme = "";
+                }
+                
+                
+                
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                //cout << "\nNow State: " << currentState << endl;
+                
+                break;
+            case 5:
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                //cout << "\nNow State: " << currentState << endl;
+                //cout << "\nNow State: " << currentState << endl;
+                
                 currentLexeme.push_back(tokenString[currentIndex]);
                 currentIndex++;
-            break;
-        case 6:
-            cout << endl << currentLexeme<< " Is Integer" << endl;
-            lexemeVector.push_back(currentLexeme);
-            currentLexeme = "";
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            //cout << "\nNow State: " << currentState << endl;
-
-            break;
-        case 7:
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            //cout << "\nNow State: " << currentState << endl;
-            
+                break;
+            case 6:
+                cout << endl << "INTEGER\t\t = \t\t " << currentLexeme;
+                outputFile << endl << "INTEGER\t\t = \t\t " << currentLexeme;
+                lexemeVector.push_back(currentLexeme);
+                currentLexeme = "";
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                //cout << "\nNow State: " << currentState << endl;
+                
+                break;
+            case 7:
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                //cout << "\nNow State: " << currentState << endl;
+                
                 //cout << "\nNow State: " << currentState << endl;
                 currentLexeme.push_back(tokenString[currentIndex]);
                 currentIndex++;
-            break;
-        case 8:
-            
-            cout << endl << currentLexeme << " Is Real Number" << endl;
-            lexemeVector.push_back(currentLexeme);
-            currentLexeme = "";
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            //cout << "\nNow State: " << currentState << endl;
-
-            break;
-        case 9:
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            //cout << "\nNow State: " << currentState << endl;
-            currentIndex++;
-            break;
-        case 10:
-            cout << endl << currentLexeme << " Is Operator" << endl;
-            lexemeVector.push_back(currentLexeme);
-            currentLexeme = "";
-            //cout << "\nCurrent State: " << currentState << endl;
-            currentState = nextState(tokenStrPos, currentIndex);
-            //cout << "\nNow State: " << currentState << endl;
-
-            break;
-            
-            
-        default:
-            break;
-    }
+                break;
+            case 8:
+                
+                cout << endl << "REAL NUMBER\t\t = \t\t " << currentLexeme;
+                outputFile << endl << "REAL NUMBER\t\t = \t\t " << currentLexeme;
+                lexemeVector.push_back(currentLexeme);
+                currentLexeme = "";
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                //cout << "\nNow State: " << currentState << endl;
+                
+                break;
+            case 9:
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                //cout << "\nNow State: " << currentState << endl;
+                currentIndex++;
+                break;
+            case 10:
+                cout << endl << "OPERATOR\t\t = \t\t " << currentLexeme;
+                outputFile << endl << "OPERATOR\t\t = \t\t " << currentLexeme;
+                lexemeVector.push_back(currentLexeme);
+                currentLexeme = "";
+                //cout << "\nCurrent State: " << currentState << endl;
+                currentState = nextState(tokenStrPos, currentIndex);
+                //cout << "\nNow State: " << currentState << endl;
+                
+                break;
+                
+                
+            default:
+                break;
+        }
     }
 }
 
@@ -291,7 +307,7 @@ void handleFile (int ac, const char * av[]) {
 
 
 void getOutput () {
- 
+    
 }//end getOutput
 
 
