@@ -75,6 +75,8 @@ int main( int argc, const char * argv[] ) {
 //==========================================================================================
 
 
+
+
 void fillLexemeVector () {
     
     for (int i = 0; i < tokenString.size()+1 ; i++) {
@@ -83,10 +85,12 @@ void fillLexemeVector () {
             //cout << "\nCurrent State: " << currentState << endl;
             currentState = nextState(tokenStrPos, currentIndex);
             ////cout << "\nNow State: " << currentState << endl;
-            
+            if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9 && int(tokenStrPos) != 0) {
                 //cout << "\nNow State: " << currentState << endl;
                 currentLexeme.push_back(tokenString[currentIndex]);
-                currentIndex++;
+                
+            }
+            currentIndex++;
             
             break;
         case 2:
@@ -100,7 +104,13 @@ void fillLexemeVector () {
             }
             break;
         case 3:
-            cout << endl << currentLexeme << " Is Identifier or Keyword" << endl;
+            
+            if (isKeyword(currentLexeme)) {
+                cout << endl << currentLexeme << " Is Keyword" << endl;
+            }
+            else {
+            cout << endl << currentLexeme << " Is Identifier" << endl;
+            }
             lexemeVector.push_back(currentLexeme);
             currentLexeme = "";
             //cout << "\nCurrent State: " << currentState << endl;
@@ -109,9 +119,18 @@ void fillLexemeVector () {
 
             break;
         case 4:
-            cout << endl << currentLexeme << " Is Separator" << endl;
-            lexemeVector.push_back(currentLexeme);
-            currentLexeme = "";
+            
+            
+            if (currentLexeme.size() > 0) {
+//                cout << "\nCurrent Lexme Size: " << currentLexeme.size();
+//                cout << "\nCurrent Lexeme: " << currentLexeme << " ASCII: " << int(currentLexeme[0]) << endl;
+                cout << endl << currentLexeme << " Is Separator" << endl;
+                lexemeVector.push_back(currentLexeme);
+                currentLexeme = "";
+            }
+            
+            
+            
             //cout << "\nCurrent State: " << currentState << endl;
             currentState = nextState(tokenStrPos, currentIndex);
             //cout << "\nNow State: " << currentState << endl;
@@ -122,6 +141,7 @@ void fillLexemeVector () {
             currentState = nextState(tokenStrPos, currentIndex);
             //cout << "\nNow State: " << currentState << endl;
                 //cout << "\nNow State: " << currentState << endl;
+            
                 currentLexeme.push_back(tokenString[currentIndex]);
                 currentIndex++;
             break;
