@@ -77,25 +77,25 @@ void fillLexemeVector () {
 
         if (currentState == 4) {
             if (tokenString[currentIndex+1] != '.') {
-                
-                currentLexeme.push_back(tokenStrPos);
-                
-                if( !isdigit(tokenString[currentIndex+1]) ){
+
+              currentLexeme.push_back(tokenStrPos);
+
+                if( !isdigit(tokenString[currentIndex+1]) ) {
                     lexemeVector.push_back(currentLexeme);
                     currentLexeme = "";
                     currentState = 1;
                     currentIndex++;
+                } else {
+
                 }
-                
             } else {
                 currentState = 5;
             }
-          
+
         }
 
         else if (currentState == 5) {
-            
-          
+
             //check if next char is a digit
             while (isdigit(tokenString[currentIndex])) {
                 //add that digit to the currentLexeme
@@ -107,10 +107,8 @@ void fillLexemeVector () {
             }
             // now the next char is not a digit
             lexemeVector.push_back(currentLexeme);
-          
-        }
 
-        else if (currentState == 3) {
+        }  else if (currentState == 3) {
 
             // make sure it is not a space
             if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9) {
@@ -129,9 +127,7 @@ void fillLexemeVector () {
             currentIndex++;
             currentLexeme = "";
 
-        }
-
-        else {
+        }  else {
             if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9)
                 currentLexeme.push_back(tokenStrPos);
             currentIndex++;
@@ -140,14 +136,8 @@ void fillLexemeVector () {
 }
 
 void getOutput () {
-
     for (newStringIterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
-      //cout << *it << endl;
-      //continue;
-      
-      
-      
-      
+
         // if the size is == 1, it must be an operator or a seperator
         if (it->size() == 1) {
             // if it is an operator
@@ -163,6 +153,10 @@ void getOutput () {
                 cout << endl;
                 cout << "SEPARATOR\t\t = \t\t" << *it;
                 outputFile << "SEPARATOR\t = \t" << *it << endl;
+            }
+            if (isNumber(*it)) {
+                cout << endl;
+                cout << "INTEGER\t\t\t = \t\t" << *it;
             }
         }
         else {
