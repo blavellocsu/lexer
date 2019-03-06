@@ -5,9 +5,11 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 #include <vector>
 #include <list>
 #include <ctype.h>
+#include <sstream>
 #define newCharIterator vector<char>::iterator // just to make the code a little easier to read
 #define newStringIterator vector<string>::iterator
 #define tokenStrPos tokenString[currentIndex]
@@ -31,6 +33,8 @@ void removeComments(string *l);
 bool isKeyword(string s);
 bool isSeparator (char c);
 bool isOperator (char c);
+bool isReal(string s);
+bool isNumber(string s);
 void printSVector (vector <string> * v);
 void handleFile (int ac, const char * av[]);
 void fillLexemeVector();
@@ -70,7 +74,29 @@ void fillLexemeVector () {
 
         //check state
         currentState = nextState(tokenStrPos, currentIndex);
-        if (currentState == 3) {
+
+        if (currentState == 4) {
+          cout << "test integer\t" << i;
+          currentLexeme.push_back(tokenStrPos);
+
+          if( !isdigit(tokenString[currentIndex+1]) ){
+            lexemeVector.push_back(currentLexeme);
+            currentLexeme = "";
+            currentState = 1;
+            currentIndex++;
+          }
+        }
+
+        else if (currentState == 5) {
+          cout << "test REAL";
+          if(!isOperator(tokenString[currentIndex+1]) || !isSeparator(tokenString[currentIndex+1])){
+            currentLexeme.push_back(tokenStrPos);
+            cout << "Next char is not op or sep ";
+          }
+        }
+
+        else if (currentState == 3) {
+
             // make sure it is not a space
             if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9) {
 
@@ -79,8 +105,9 @@ void fillLexemeVector () {
                     lexemeVector.push_back(currentLexeme);
                     currentLexeme = "";
                 }
+
                 currentLexeme.push_back(tokenStrPos);
-            }
+            }//
             lexemeVector.push_back(currentLexeme);
 
             currentState = 1;
@@ -88,6 +115,7 @@ void fillLexemeVector () {
             currentLexeme = "";
 
         }
+
         else {
             if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9)
                 currentLexeme.push_back(tokenStrPos);
@@ -99,7 +127,17 @@ void fillLexemeVector () {
 void getOutput () {
 
     for (newStringIterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
-
+      //cout << *it << endl;
+      //continue;
+      /*
+      if (isReal(*it)) {
+        cout << "REAL NUMBER\t\t = \t\t" << *it;
+      }
+      */
+      if (isNumber(*it)) {
+        cout << endl;
+        cout << "INTEGER\t\t\t = \t\t" << *it;
+      }
         // if the size is == 1, it must be an operator or a seperator
         if (it->size() == 1) {
             // if it is an operator
@@ -109,6 +147,7 @@ void getOutput () {
                 cout << "OPERATOR\t\t = \t\t" << *it;
                 outputFile << "OPERATOR\t = \t" << *it << endl;
             }
+
             // if it is a separator
             if (isSeparator(it->at(0))) {
                 cout << endl;
@@ -210,8 +249,10 @@ bool isKeyword(string s) {
 
 
 bool isSeparator (char c) {
+
+  //removed .
     if (c == '\'' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']' || c == ',' ||
-        c == '.' || c == ':' || c == ';' || c == '!' || isspace(c)) {
+       c == ':' || c == ';' || c == '!' || int(c) == 13 || int(c) == 10 || int(c) == 32 || int(c) == 9) {
         return true;
     }
     else {
@@ -228,6 +269,18 @@ bool isOperator (char c) {
     }
 }//end isOperator
 
+bool isNumber(string s) {
+  string::const_iterator it = s.begin();
+  while (it != s.end() && isdigit(*it)) ++it;
+  return !s.empty() && it == s.end();
+}
+
+bool isReal(string s){
+  istringstream iss(s);
+  float f;
+  iss >> noskipws >> f;
+  return iss.eof() && !iss.fail();
+}
 
 
 void printSVector (vector <string> * v) {
