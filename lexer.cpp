@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <sstream>
 #define newCharIterator vector<char>::iterator // just to make the code a little easier to read
+#define SIZE 9999999
 #define newStringIterator vector<string>::iterator
 #define tokenStrPos tokenString[currentIndex]
 
@@ -23,7 +24,6 @@ bool isOperator (char c);
 //void printSVector (vector <string> * v);
 void handleFile (int ac, const char * av[]);
 void fillLexemeVector(int size);
-void getOutput ();
 int nextState (char theInput, int index);
 
 string currentLexeme;
@@ -44,13 +44,11 @@ int fsm[10][6] = {
     1,1,1,1,1,1,
     9,5,9,6,6,7,
     1,1,1,1,1,1,
-    9,8,9,9,9,9,
-    9,8,9,8,8,9,
+    9,7,9,8,8,9,
+    1,1,1,1,1,1,
     1,1,1,1,1,1,
     1,1,1,1,1,1
 };
-
-
 
 
 
@@ -58,24 +56,14 @@ int fsm[10][6] = {
 //==========================================================================================
 
 int main( int argc, const char * argv[] ) {
-    
+
     handleFile (argc, argv);
-    cout << "Token string size before removing comments: " << tokenString.size();
     int theSize = tokenString.size();
     removeComments(&tokenString);
-    cout << "After: " << tokenString.size();
     cout << "------------------------" << endl;
-    getOutput();
-   // fillLexemeVector();
-    
-    
-    cout << tokenString;
-    
     fillLexemeVector(theSize);
-    
     outputFile.close();
     cout << endl;
-    
     return 0;
 } //end main
 
@@ -83,12 +71,9 @@ int main( int argc, const char * argv[] ) {
 //==========================================================================================
 
 
-
-
 void fillLexemeVector (int size) {
-    cout << endl << tokenString.size();
-    
-    for (int i = 0; i < 9999999 ; i++) {
+
+    for (int i = 0; i < SIZE ; i++) {
         switch (currentState) {
             case 1:
                 //cout << "\nCurrent State: " << currentState << endl;
@@ -97,13 +82,11 @@ void fillLexemeVector (int size) {
                 if (int(tokenStrPos) != 13 && int(tokenStrPos) != 10 && int(tokenStrPos) != 32 && int(tokenStrPos) != 9 && int(tokenStrPos) != 0) {
                     //cout << "\nNow State: " << currentState << endl;
                     currentLexeme.push_back(tokenString[currentIndex]);
-                    
                 }
                 currentIndex++;
-                
                 break;
             case 2:
-                
+
                 //cout << "\nCurrent State: " << currentState << endl;
                 currentState = nextState(tokenStrPos, currentIndex);
                 if (currentState!=3 && currentState != 9) {
@@ -113,11 +96,11 @@ void fillLexemeVector (int size) {
                 }
                 break;
             case 3:
-                
+
                 if (isKeyword(currentLexeme)) {
-                    
+
                     cout << endl << "KEYWORD\t\t\t = \t\t " << currentLexeme;
-                    outputFile << endl << "KEYWORD\t\t\t = \t\t " << currentLexeme;
+                    outputFile << endl << "KEYWORD\t\t\t\t = \t\t " << currentLexeme;
                 }
                 else {
                     cout << endl << "IDENTIFIER\t\t = \t\t " << currentLexeme;
@@ -128,57 +111,56 @@ void fillLexemeVector (int size) {
                 //cout << "\nCurrent State: " << currentState << endl;
                 currentState = nextState(tokenStrPos, currentIndex);
                 //cout << "\nNow State: " << currentState << endl;
-                
+
                 break;
             case 4:
-                
-                
+
                 if (currentLexeme.size() > 0) {
                     //                cout << "\nCurrent Lexme Size: " << currentLexeme.size();
                     //                cout << "\nCurrent Lexeme: " << currentLexeme << " ASCII: " << int(currentLexeme[0]) << endl;
                     cout << endl << "SEPARATOR\t\t = \t\t " << currentLexeme;
-                    outputFile << endl << "SEPARATOR\t\t = \t\t " << currentLexeme;
+                    outputFile << endl << "SEPARATOR\t\t\t = \t\t " << currentLexeme;
                     lexemeVector.push_back(currentLexeme);
                     currentLexeme = "";
                 }
-                
-                
-                
+
                 //cout << "\nCurrent State: " << currentState << endl;
                 currentState = nextState(tokenStrPos, currentIndex);
                 //cout << "\nNow State: " << currentState << endl;
-                
+
                 break;
             case 5:
                 //cout << "\nCurrent State: " << currentState << endl;
                 currentState = nextState(tokenStrPos, currentIndex);
                 //cout << "\nNow State: " << currentState << endl;
                 //cout << "\nNow State: " << currentState << endl;
-                
+                if (currentState!=6 && currentState != 9) {
                 currentLexeme.push_back(tokenString[currentIndex]);
                 currentIndex++;
+              }
                 break;
             case 6:
-                cout << endl << "INTEGER\t\t = \t\t " << currentLexeme;
-                outputFile << endl << "INTEGER\t\t = \t\t " << currentLexeme;
+                cout << endl << "INTEGER\t\t\t = \t\t " << currentLexeme;
+                outputFile << endl << "INTEGER\t\t\t\t = \t\t " << currentLexeme;
                 lexemeVector.push_back(currentLexeme);
                 currentLexeme = "";
                 //cout << "\nCurrent State: " << currentState << endl;
                 currentState = nextState(tokenStrPos, currentIndex);
                 //cout << "\nNow State: " << currentState << endl;
-                
+
                 break;
             case 7:
                 //cout << "\nCurrent State: " << currentState << endl;
                 currentState = nextState(tokenStrPos, currentIndex);
                 //cout << "\nNow State: " << currentState << endl;
-                
                 //cout << "\nNow State: " << currentState << endl;
+                if (currentState!=8 && currentState != 9) {
                 currentLexeme.push_back(tokenString[currentIndex]);
                 currentIndex++;
+              }
                 break;
             case 8:
-                
+
                 cout << endl << "REAL NUMBER\t\t = \t\t " << currentLexeme;
                 outputFile << endl << "REAL NUMBER\t\t = \t\t " << currentLexeme;
                 lexemeVector.push_back(currentLexeme);
@@ -186,7 +168,7 @@ void fillLexemeVector (int size) {
                 //cout << "\nCurrent State: " << currentState << endl;
                 currentState = nextState(tokenStrPos, currentIndex);
                 //cout << "\nNow State: " << currentState << endl;
-                
+
                 break;
             case 9:
                 //cout << "\nCurrent State: " << currentState << endl;
@@ -196,16 +178,15 @@ void fillLexemeVector (int size) {
                 break;
             case 10:
                 cout << endl << "OPERATOR\t\t = \t\t " << currentLexeme;
-                outputFile << endl << "OPERATOR\t\t = \t\t " << currentLexeme;
+                outputFile << endl << "OPERATOR\t\t\t = \t\t " << currentLexeme;
                 lexemeVector.push_back(currentLexeme);
                 currentLexeme = "";
                 //cout << "\nCurrent State: " << currentState << endl;
                 currentState = nextState(tokenStrPos, currentIndex);
                 //cout << "\nNow State: " << currentState << endl;
-                
+
                 break;
-                
-                
+
             default:
                 break;
         }
@@ -216,7 +197,7 @@ void fillLexemeVector (int size) {
 int nextState (char theInput, int index) {
     //returns the state of the machine at the current index
     //returns -1 if the char is not allowed
-    
+
     if (isalpha(theInput)) {
         return fsm[currentState-1][0];
     }
@@ -259,12 +240,12 @@ void removeComments(string *l) {
             }
             // if we got here, that means we found the next !
             int whereCommEnd = j;
-            
+
             // now we erase the substring between our two markers
             l->erase(whereCommStart, whereCommEnd-whereCommStart+1);
             len = l->length();
         }//end if '!'
-        
+
     }//end for
 }//end function
 
@@ -276,41 +257,34 @@ void handleFile (int ac, const char * av[]) {
         cout << "Invalid Arguments.\n" << usage << endl;
         exit(1);
     }
-    
+
     //File handling
     //read filename in from command line argument
     //see top of file for correct command line usage
     string filename = av[1];
-    
+
     //Create filesream
     ifstream file(filename);
     //check to see if file opened correctly
     if (file.is_open()) {
         cout << "File opened successfully." << endl;
-        
+
         // read content of txt file (including white spaces) into a string
         string contents((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-        
+
         for (int i = 0; i < contents.length(); i++) {
             tokenString.push_back(contents[i]);
         }
-        
+
         outputFile.open("output_" + filename);
-        outputFile << "\nTOKENS\t\t\t" << "Lexemes\n" << endl;
-        
+        outputFile << "\nTOKENS\t\t\t\t\t\t" << "Lexemes\n" << endl;
+
     }//end if
     else {
         cout << "File Error: Could not open file.\n" << usage << endl;
         exit(1);
     }//end error test
 }//end handleFile
-
-
-void getOutput () {
-    
-}//end getOutput
-
-
 
 bool isKeyword(string s) {
     if (s == "int" || s == "float" || s == "bool" || s == "if" || s == "else" || s == "then" || s == "do" || s == "while" || s == "whileend" || s == "do" || s == "doend" || s == "for" || s == "and" || s == "or" || s == "function") {
@@ -321,7 +295,7 @@ bool isKeyword(string s) {
 
 
 bool isSeparator (char c) {
-    
+
     //removed .
     if (c == '\'' || c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']' || c == ',' ||
         c == ':' || c == ';' || c == '!' || int(c) == 13 || int(c) == 10 || int(c) == 32 || int(c) == 9) {
@@ -340,4 +314,3 @@ bool isOperator (char c) {
         return false;
     }
 }//end isOperator
-
