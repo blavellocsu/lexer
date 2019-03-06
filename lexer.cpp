@@ -76,23 +76,38 @@ void fillLexemeVector () {
         currentState = nextState(tokenStrPos, currentIndex);
 
         if (currentState == 4) {
-          cout << "test integer\t" << i;
-          currentLexeme.push_back(tokenStrPos);
-
-          if( !isdigit(tokenString[currentIndex+1]) ){
-            lexemeVector.push_back(currentLexeme);
-            currentLexeme = "";
-            currentState = 1;
-            currentIndex++;
-          }
+            if (tokenString[currentIndex+1] != '.') {
+                
+                currentLexeme.push_back(tokenStrPos);
+                
+                if( !isdigit(tokenString[currentIndex+1]) ){
+                    lexemeVector.push_back(currentLexeme);
+                    currentLexeme = "";
+                    currentState = 1;
+                    currentIndex++;
+                }
+                
+            } else {
+                currentState = 5;
+            }
+          
         }
 
         else if (currentState == 5) {
-          cout << "test REAL";
-          if(!isOperator(tokenString[currentIndex+1]) || !isSeparator(tokenString[currentIndex+1])){
-            currentLexeme.push_back(tokenStrPos);
-            cout << "Next char is not op or sep ";
-          }
+            
+          
+            //check if next char is a digit
+            while (isdigit(tokenString[currentIndex])) {
+                //add that digit to the currentLexeme
+//                cout << "\nPushing back: " <<
+                currentLexeme.push_back((tokenStrPos));
+                currentIndex++;
+                //check again until we see a nondigit
+
+            }
+            // now the next char is not a digit
+            lexemeVector.push_back(currentLexeme);
+          
         }
 
         else if (currentState == 3) {
@@ -129,15 +144,10 @@ void getOutput () {
     for (newStringIterator it = lexemeVector.begin(); it != lexemeVector.end(); it++) {
       //cout << *it << endl;
       //continue;
-      /*
-      if (isReal(*it)) {
-        cout << "REAL NUMBER\t\t = \t\t" << *it;
-      }
-      */
-      if (isNumber(*it)) {
-        cout << endl;
-        cout << "INTEGER\t\t\t = \t\t" << *it;
-      }
+      
+      
+      
+      
         // if the size is == 1, it must be an operator or a seperator
         if (it->size() == 1) {
             // if it is an operator
@@ -160,6 +170,12 @@ void getOutput () {
                 cout << endl;
                 cout << "KEYWORD\t\t\t = \t\t" << *it;
                 outputFile << "KEYWORD\t\t = \t" << *it << endl;
+            }
+            else if (isNumber(*it)) {
+                cout << endl;
+                cout << "INTEGER\t\t\t = \t\t" << *it;
+            } else if (isReal(*it)) {
+                cout << "\nREAL NUMBER\t\t = \t\t" << *it;
             }
             else {
                 if (it->size() != 0) {
