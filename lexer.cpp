@@ -21,10 +21,18 @@ void removeComments(string *l);
 bool isKeyword(string s);
 bool isSeparator (char c);
 bool isOperator (char c);
-//void printSVector (vector <string> * v);
+void printSVector (vector <string> * v);
 void handleFile (int ac, const char * av[]);
 void fillLexemeVector();
 int lexer (char theInput, int index);
+
+void parser();
+bool E();
+bool T();
+bool Eprime();
+bool Tprime();
+bool F();
+
 
 string currentLexeme;
 vector <string> lexemeVector;
@@ -33,7 +41,7 @@ int currentIndex = 0;
 string tokenString;
 ofstream outputFile;
 
-//==========================================================================================
+//========================================================================================
 //Global data
 
 // finite state machine
@@ -61,6 +69,8 @@ int main( int argc, const char * argv[] ) {
     removeComments(&tokenString);
     cout << "------------------------" << endl;
     fillLexemeVector();
+    cout << "\n" << endl;
+    //parser();
     outputFile.close();
     cout << endl;
     return 0;
@@ -97,7 +107,6 @@ void fillLexemeVector () {
             case 3:
                 
                 if (isKeyword(currentLexeme)) {
-                    
                     cout << endl << "KEYWORD\t\t\t = \t\t " << currentLexeme;
                     outputFile << endl << "KEYWORD\t\t\t\t = \t\t " << currentLexeme;
                 }
@@ -105,6 +114,7 @@ void fillLexemeVector () {
                     cout << endl << "IDENTIFIER\t\t = \t\t " << currentLexeme;
                     outputFile << endl << "IDENTIFIER\t\t = \t\t " << currentLexeme;
                 }
+                parser(currentLexeme);
                 lexemeVector.push_back(currentLexeme);
                 currentLexeme = "";
                 //cout << "\nCurrent State: " << currentState << endl;
@@ -190,6 +200,8 @@ void fillLexemeVector () {
                 break;
         }
     }
+    //cout << "TESTING THIS\n";
+    //printSVector(&lexemeVector);
 }
 
 
@@ -313,3 +325,69 @@ bool isOperator (char c) {
         return false;
     }
 }//end isOperator
+
+//void printSVector (vector <string> * v) {
+//    for (newStringIterator it = v->begin(); it != v->end(); ++it) {
+//        cout << *it;
+//    }
+//}//end printSVector
+
+
+//  E  -> TE'
+//  E' -> +TE' | -TE' | ε
+//  T  -> FT'
+//  T' -> +FT' | /FT' | ε
+//  F -> i | (E)
+
+
+void parser(){
+    E();
+}
+
+
+//  E  -> TE'
+bool E() {
+    cout << "<Expression -> <T> <E'>" << endl;
+    if (T()) {
+        
+    }
+    Eprime();
+    
+    return false;
+}
+
+//  E' -> +TE' | -TE' | ε
+bool Eprime() {
+    cout << "<Term> -> ε" << endl;
+    return false;
+
+}
+
+//  T  -> FT'
+bool T() {
+    cout << "<Term> -> <F> <T'> " << endl;
+    if (F()){
+        if (Tprime()){
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+//  T' -> +FT' | /FT' | ε
+bool Tprime() {
+    cout << "<Term> -> ε" << endl;
+    cout << "if token is * or /";
+    return false;
+
+}
+
+//  F -> i | (E)
+bool F() {
+    cout << "Factor -> " << endl;
+    return true;
+
+}
+
