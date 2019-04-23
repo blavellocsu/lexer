@@ -26,7 +26,11 @@ void handleFile (int ac, const char * av[]);
 void fillLexemeVector();
 int lexer (char theInput, int index);
 
-void parser();
+/*
+bool parse(string lexeme);
+*/
+ 
+void parser(string lexeme);
 bool E();
 bool T();
 bool Eprime();
@@ -40,6 +44,8 @@ int currentState = 1;
 int currentIndex = 0;
 string tokenString;
 ofstream outputFile;
+
+bool printSwitch = true;
 
 //========================================================================================
 //Global data
@@ -57,8 +63,6 @@ int fsm[10][6] = {
     1,1,1,1,1,1,
     1,1,1,1,1,1
 };
-
-
 
 //==========================================================================================
 //==========================================================================================
@@ -339,20 +343,31 @@ bool isOperator (char c) {
 //  T' -> +FT' | /FT' | ε
 //  F -> i | (E)
 
-
+/*
 void parser(){
-    E();
+    //E();
+    
 }
+ 
+bool parse(string lexeme) {
 
+}
+*/
 
+    
+
+void parser(string lexeme){
+    cout << "CURRENT LEXEME: " << lexeme << endl;
+    E();
+    Eprime();
+    T();
+    Tprime();
+    F();
+}
+ 
 //  E  -> TE'
 bool E() {
     cout << "<Expression -> <T> <E'>" << endl;
-    if (T()) {
-        
-    }
-    Eprime();
-    
     return false;
 }
 
@@ -366,11 +381,6 @@ bool Eprime() {
 //  T  -> FT'
 bool T() {
     cout << "<Term> -> <F> <T'> " << endl;
-    if (F()){
-        if (Tprime()){
-            return true;
-        }
-    }
     return false;
 }
 
