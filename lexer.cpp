@@ -32,6 +32,7 @@ void T();
 void EPrime();
 void TPrime();
 void F();
+void epsilon();
 
 
 //GLOBAL DATA
@@ -320,7 +321,7 @@ bool isOperator (char c) {
 //        E  -> TE'
 //        E' -> +TE' | -TE' | ε
 //        T  -> FT'
-//        T' -> +FT' | /FT' | ε
+//        T' -> *FT' | /FT' | ε
 //        F -> i | (E)
 //
 //==========================================================================================
@@ -356,14 +357,11 @@ void EPrime() {
 //        cout << "It's a +" << endl;
 //        T();
 //        EPrime();
-    }
-    
-    if (output.lexeme == "-") {
+    } else if (output.lexeme == "-") {
 //        cout << "It's a " << endl;
 //        T();
 //        EPrime();
     }
-    
 };
 
 //  T  -> FT'
@@ -378,15 +376,15 @@ void T() {
 
 };
 
-//  T' -> +FT' | /FT' | ε
+//  T' -> *FT' | /FT' | ε
 void TPrime() {
     //Print to CMD Line
     if (printSwitch) {
-        cout << "<Term Prime> -> NOT SURE <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
+        cout << "<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
     }
     
     //write to file
-    outputFile << "\t<Term Prime> -> NOT SURE <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
+    outputFile << "\t<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
 
 };
 
@@ -402,7 +400,10 @@ void F() {
 
 };
 
-
+//not sure what to do with this yet
+void epsilon () {
+    cout << "ε case" << endl;
+};
 
 
 
