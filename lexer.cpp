@@ -60,6 +60,7 @@ int fsm[10][6] = {
 
 struct Output {
     string lexeme, token;
+    int index;
 } output;
 
 //PrintSwitch
@@ -73,7 +74,6 @@ bool printSwitch = true;
 //==========================================================================================
 
 int main( int argc, const char * argv[] ) {
-    
     handleFile (argc, argv);
     removeComments(&tokenString);
     cout << "------------------------" << endl;
@@ -161,6 +161,7 @@ void removeComments(string *l) {
 void fillLexemeVector () {
     
     for (int i = 0; i < SIZE ; i++) {
+        output.index = 0;
         switch (currentState) {
             case 1:
                 currentState = lexer(tokenStrPos, currentIndex);
@@ -346,21 +347,23 @@ void E() {
 void EPrime() {
     //Print to CMD Line
     if (printSwitch) {
-        //cout << "<Expression Prime> -> + <Term> <Expression Prime> | - <Term> <Expression Prime> | ε" << endl;
+        cout << "<Expression Prime> -> + <Term> <Expression Prime> | - <Term> <Expression Prime> | ε" << endl;
      }
     
     //write to file
     //outputFile << "<Expression Prime> -> + <Term> <Expression Prime> | - <Term> <Expression Prime> | ε" << endl;
     
     //logic (RULES)
-    if (output.lexeme == "+") {
-//        cout << "It's a +" << endl;
-//        T();
-//        EPrime();
-    } else if (output.lexeme == "-") {
-//        cout << "It's a " << endl;
-//        T();
-//        EPrime();
+    if (string(1,output.lexeme[output.index]) == "+") {
+        output.index++;
+        cout << "It's a +" << endl;
+        T();
+        EPrime();
+    } else if (string(1,output.lexeme[output.index]) == "-") {
+        output.index++;
+        cout << "It's a -" << endl;
+        T();
+        EPrime();
     }
 };
 
@@ -382,7 +385,17 @@ void TPrime() {
     if (printSwitch) {
         cout << "<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
     }
-    
+    if (string(1,output.lexeme[output.index]) == "*") {
+        output.index++;
+        cout << "It's a *" << endl;
+        F();
+        TPrime();
+    } else if (string(1,output.lexeme[output.index]) == "/") {
+        output.index++;
+        cout << "It's a /" << endl;
+        F();
+        TPrime();
+    }
     //write to file
     outputFile << "\t<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
 
@@ -394,10 +407,13 @@ void F() {
     if (printSwitch) {
         cout << "<Factor> -> i | <Expression> | ε" << endl;
     }
-
+    
     //write to file
     outputFile << "\t<Factor> -> i | <Expression> | ε" << endl;
-
+    
+    if (string(1,output.lexeme[output.index]) == " "){
+        output.index++;
+    }
 };
 
 //not sure what to do with this yet
