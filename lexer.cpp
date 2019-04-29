@@ -27,22 +27,35 @@ void printSVector (vector <string> * v);
 void handleFile (int ac, const char * av[]);
 void fillLexemeVector();
 int lexer (char theInput, int index);
+void parser();
+
+bool E();
+bool T();
+bool EPrime();
+bool TPrime();
+bool F();
+void epsilon();
+ 
+
+/*
 void E();
 void T();
 void EPrime();
 void TPrime();
 void F();
 void epsilon();
-
+*/
 
 //GLOBAL DATA
 string currentLexeme;
 vector <string> lexemeVector;
 vector <string> tokenVector;
+int vIndex = 0;
 int currentState = 1;
 int currentIndex = 0;
 string tokenString;
 ofstream outputFile;
+bool valid = true;
 
 //finite state machine
 int fsm[10][6] = {
@@ -78,6 +91,7 @@ int main( int argc, const char * argv[] ) {
     removeComments(&tokenString);
     cout << "------------------------" << endl;
     fillLexemeVector();
+    parser();
     cout << "\n" << endl;
     outputFile.close();
     cout << endl;
@@ -181,18 +195,18 @@ void fillLexemeVector () {
             
             case 3:
                 if (isKeyword(currentLexeme)) {
-//                    tokenVector.push_back("KEYWORD");
-                    output.lexeme = currentLexeme;
-                    output.token = "KEYWORD   ";
-                    E();
+                    tokenVector.push_back("KEYWORD");
+                    //output.lexeme = currentLexeme;
+                    //output.token = "KEYWORD   ";
+                    //E();
                 }
                 else {
-//                    tokenVector.push_back("IDENTIFIER");
-                    output.lexeme = currentLexeme;
-                    output.token = "IDENTIFIER";
-                    E();
+                    tokenVector.push_back("IDENTIFIER");
+                    //output.lexeme = currentLexeme;
+                    //output.token = "IDENTIFIER";
+                    //E();
                 }
-//                lexemeVector.push_back(currentLexeme);
+                lexemeVector.push_back(currentLexeme);
                 currentLexeme = "";
                 currentState = lexer(tokenStrPos, currentIndex);
                 break;
@@ -200,12 +214,12 @@ void fillLexemeVector () {
             case 4:
                 
                 if (currentLexeme.size() > 0) {
-//                    lexemeVector.push_back(currentLexeme);
-//                    tokenVector.push_back("SEPARATOR");
-                    output.lexeme = currentLexeme;
-                    output.token = "SEPARATOR";
+                    lexemeVector.push_back(currentLexeme);
+                    tokenVector.push_back("SEPARATOR");
+                    //output.lexeme = currentLexeme;
+                    //output.token = "SEPARATOR";
                     currentLexeme = "";
-                    E();
+                    //E();
                 }
                 currentState = lexer(tokenStrPos, currentIndex);
                 break;
@@ -219,12 +233,12 @@ void fillLexemeVector () {
                 break;
                 
             case 6:
-//                lexemeVector.push_back(currentLexeme);
-//                tokenVector.push_back("INTEGER");
-                output.lexeme = currentLexeme;
-                output.token = "INTEGER";
+                lexemeVector.push_back(currentLexeme);
+                tokenVector.push_back("INTEGER");
+                //output.lexeme = currentLexeme;
+                //output.token = "INTEGER";
                 currentLexeme = "";
-                E();
+                //E();
                 currentState = lexer(tokenStrPos, currentIndex);
                 break;
                 
@@ -237,12 +251,12 @@ void fillLexemeVector () {
                 break;
                 
             case 8:
-//                tokenVector.push_back("REAL NUMBER");
-//                lexemeVector.push_back(currentLexeme);
-                output.lexeme = currentLexeme;
-                output.token = "REAL NUMBER";
+                tokenVector.push_back("REAL NUMBER");
+                lexemeVector.push_back(currentLexeme);
+                //output.lexeme = currentLexeme;
+                //output.token = "REAL NUMBER";
                 currentLexeme = "";
-                E();
+                //E();
                 currentState = lexer(tokenStrPos, currentIndex);
                 break;
                 
@@ -252,12 +266,12 @@ void fillLexemeVector () {
                 break;
                 
             case 10:
-//                lexemeVector.push_back(currentLexeme);
-//                tokenVector.push_back("OPERATOR");
-                output.lexeme = currentLexeme;
-                output.token = "OPERATOR ";
+                lexemeVector.push_back(currentLexeme);
+                tokenVector.push_back("OPERATOR");
+                //output.lexeme = currentLexeme;
+                //output.token = "OPERATOR ";
                 currentLexeme = "";
-                E();
+                //E();
                 currentState = lexer(tokenStrPos, currentIndex);
                 break;
                 
@@ -327,12 +341,119 @@ bool isOperator (char c) {
 //
 //==========================================================================================
 
+void parser() {
+    for(vIndex = 0; vIndex < lexemeVector.size()-1; vIndex++) {
+        if( E() ) cout << "CODE VALID";
+        else cout << "CODE INVALID";
+        //E();
+    }
+}
+
+
+
+//  E  -> TE'
+bool E() {
+    //Print to CMD Line
+    if (printSwitch) {
+        cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
+        cout << "<Expression> -> <Term> <Expression Prime>" << endl;
+    }
+    //write to file
+    outputFile << "\nToken: " << output.token << "\t\tLexeme: " << output.lexeme << endl;
+    outputFile << "\t<Expression> -> <Term> <Expression Prime>" << endl;
+    T();
+    EPrime();
+    return true;
+}
+
+//  E' -> +TE' | -TE' | ε
+bool EPrime() {
+    //Print to CMD Line
+    if (printSwitch) {
+        cout << "<Expression Prime> -> + <Term> <Expression Prime> | - <Term> <Expression Prime> | ε" << endl;
+    }
+    //write to file
+    //outputFile << "<Expression Prime> -> + <Term> <Expression Prime> | - <Term> <Expression Prime> | ε" << endl;
+    
+    //logic (RULES)
+    if (lexemeVector.at(vIndex) == "+" || lexemeVector.at(vIndex) == "-") {
+        vIndex++;
+
+        cout << "It's a + or -" << endl;
+        T();
+        EPrime();
+        return true;
+    }
+    return false;
+};
+
+//  T  -> FT'
+bool T() {
+    //Print to CMD Line
+    if (printSwitch) {
+        cout << "<Term> -> <Factor> <Term Prime>" << endl;
+    }
+    //write to file
+    outputFile << "\t<Term> -> <Factor> <Term Prime>" << endl;
+    
+    F();
+    TPrime();
+    return true;
+};
+
+//  T' -> *FT' | /FT' | ε
+bool TPrime() {
+    //Print to CMD Line
+    if (printSwitch) {
+        cout << "<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
+    }
+    //write to file
+    outputFile << "\t<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
+    
+    vIndex++;
+    cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
+    if (lexemeVector.at(vIndex) == "*" || lexemeVector.at(vIndex) == "/") {
+        cout << "It's a * or /" << endl;
+        
+//        vIndex++;
+        F();
+        TPrime();
+        return true;
+    }
+    return false;
+};
+
+//  F -> i | (E)
+bool F() {
+    //Print to CMD Line
+    if (printSwitch) {
+        cout << "<Factor> -> " << lexemeVector.at(vIndex) << endl;
+    }
+    //write to file
+    outputFile << "\t<Factor> -> " << lexemeVector.at(vIndex) << endl;
+    return true;
+};
+
+//not sure what to do with this yet
+void epsilon () {
+    cout << "ε case" << endl;
+};
+
+
+
+
+
+
+
+
+
+/*
 
 //  E  -> TE'
 void E() {
     //Print to CMD Line
     if (printSwitch) {
-        cout << "\nToken: " << output.token << "\tLexeme: " << output.lexeme << endl;
+        cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
         cout << "<Expression> -> <Term> <Expression Prime>" << endl;
     }
     //write to file
@@ -354,14 +475,9 @@ void EPrime() {
     //outputFile << "<Expression Prime> -> + <Term> <Expression Prime> | - <Term> <Expression Prime> | ε" << endl;
     
     //logic (RULES)
-    if (string(1,output.lexeme[output.index]) == "+") {
-        output.index++;
-        cout << "It's a +" << endl;
-        T();
-        EPrime();
-    } else if (string(1,output.lexeme[output.index]) == "-") {
-        output.index++;
-        cout << "It's a -" << endl;
+    if (lexemeVector.at(vIndex) == "+" || lexemeVector.at(vIndex) == "-") {
+        vIndex++;
+        cout << "It's a + or -" << endl;
         T();
         EPrime();
     }
@@ -373,7 +489,8 @@ void T() {
     if (printSwitch) {
         cout << "<Term> -> <Factor> <Term Prime>" << endl;
     }
-    
+    F();
+    TPrime();
     //write to file
     outputFile << "\t<Term> -> <Factor> <Term Prime>" << endl;
 
@@ -385,16 +502,17 @@ void TPrime() {
     if (printSwitch) {
         cout << "<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
     }
-    if (string(1,output.lexeme[output.index]) == "*") {
-        output.index++;
+    if (lexemeVector.at(vIndex) == "*") {
+        vIndex++;
         cout << "It's a *" << endl;
         F();
         TPrime();
-    } else if (string(1,output.lexeme[output.index]) == "/") {
-        output.index++;
+    } else if (lexemeVector.at(vIndex) == "/") {
+        vIndex++;
         cout << "It's a /" << endl;
         F();
         TPrime();
+    } else if (tokenVector[vIndex] == "IDENTIFIER" || tokenVector[vIndex] == "KEYWORD"){
     }
     //write to file
     outputFile << "\t<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
@@ -407,13 +525,9 @@ void F() {
     if (printSwitch) {
         cout << "<Factor> -> i | <Expression> | ε" << endl;
     }
-    
     //write to file
     outputFile << "\t<Factor> -> i | <Expression> | ε" << endl;
     
-    if (string(1,output.lexeme[output.index]) == " "){
-        output.index++;
-    }
 };
 
 //not sure what to do with this yet
@@ -423,8 +537,7 @@ void epsilon () {
 
 
 
-
-
+*/
 
 //==========================================================================================
 // TESTING TEMPORARY FUNCTIONS
