@@ -29,22 +29,13 @@ void fillLexemeVector();
 int lexer (char theInput, int index);
 void parser();
 
+bool S();
 bool E();
 bool T();
 bool EPrime();
 bool TPrime();
 bool F();
 void epsilon();
- 
-
-/*
-void E();
-void T();
-void EPrime();
-void TPrime();
-void F();
-void epsilon();
-*/
 
 //GLOBAL DATA
 string currentLexeme;
@@ -267,7 +258,7 @@ void fillLexemeVector () {
                 
             case 10:
                 lexemeVector.push_back(currentLexeme);
-                tokenVector.push_back("OPERATOR");
+                tokenVector.push_back("OPERATOR  ");
                 //output.lexeme = currentLexeme;
                 //output.token = "OPERATOR ";
                 currentLexeme = "";
@@ -333,7 +324,8 @@ bool isOperator (char c) {
 // PARSER FUNCTIONS
 //
 // RULES:
-//        E  -> TE'
+//        S  -> i = E
+//        E  -> T E'
 //        E' -> +TE' | -TE' | ε
 //        T  -> FT'
 //        T' -> *FT' | /FT' | ε
@@ -343,13 +335,39 @@ bool isOperator (char c) {
 
 void parser() {
     for(vIndex = 0; vIndex < lexemeVector.size()-1; vIndex++) {
-        if( E() ) cout << "CODE VALID";
-        else cout << "CODE INVALID";
-        //E();
+        if( !S() ) {
+            cout << "CODE INVALID\n";
+            valid = false;
+            break;
+        }
     }
+    if (valid) cout << "\nCODE VALID\n";
 }
 
-
+//  S  -> i = E
+bool S() {
+    //Print to CMD Line
+    if (printSwitch) {
+        cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
+        cout << "<Statement> -> <Identifer> = <Expression>" << endl;
+    }
+   
+    if (tokenVector.at(vIndex) == "IDENTIFIER") {
+        vIndex++;
+        cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
+        if (lexemeVector.at(vIndex) == "=") {
+            vIndex++;
+            E();
+        } else {
+            std::cerr << "Expected =\n";
+            return false;
+        }
+    } else {
+        std::cerr << "Expected identifier\n";
+        return false;
+    }
+    return true;
+}
 
 //  E  -> TE'
 bool E() {
@@ -358,9 +376,11 @@ bool E() {
         cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
         cout << "<Expression> -> <Term> <Expression Prime>" << endl;
     }
+    
     //write to file
     outputFile << "\nToken: " << output.token << "\t\tLexeme: " << output.lexeme << endl;
     outputFile << "\t<Expression> -> <Term> <Expression Prime>" << endl;
+    
     T();
     EPrime();
     return true;
@@ -378,8 +398,7 @@ bool EPrime() {
     //logic (RULES)
     if (lexemeVector.at(vIndex) == "+" || lexemeVector.at(vIndex) == "-") {
         vIndex++;
-
-        cout << "It's a + or -" << endl;
+        cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
         T();
         EPrime();
         return true;
@@ -398,6 +417,7 @@ bool T() {
     
     F();
     TPrime();
+    
     return true;
 };
 
@@ -410,15 +430,13 @@ bool TPrime() {
     //write to file
     outputFile << "\t<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
     
-    vIndex++;
-    cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
     if (lexemeVector.at(vIndex) == "*" || lexemeVector.at(vIndex) == "/") {
-        cout << "It's a * or /" << endl;
-        
-//        vIndex++;
+        //vIndex++;
         F();
         TPrime();
         return true;
+    } else {
+        epsilon();
     }
     return false;
 };
@@ -431,7 +449,11 @@ bool F() {
     }
     //write to file
     outputFile << "\t<Factor> -> " << lexemeVector.at(vIndex) << endl;
-    return true;
+    
+    vIndex++;
+    cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
+
+    return false;
 };
 
 //not sure what to do with this yet
@@ -445,99 +467,6 @@ void epsilon () {
 
 
 
-
-
-/*
-
-//  E  -> TE'
-void E() {
-    //Print to CMD Line
-    if (printSwitch) {
-        cout << "\nToken: " << tokenVector.at(vIndex) << "\tLexeme: " << lexemeVector.at(vIndex) << endl;
-        cout << "<Expression> -> <Term> <Expression Prime>" << endl;
-    }
-    //write to file
-    outputFile << "\nToken: " << output.token << "\t\tLexeme: " << output.lexeme << endl;
-    outputFile << "\t<Expression> -> <Term> <Expression Prime>" << endl;
-    
-    T();
-    EPrime();
-}
-
-//  E' -> +TE' | -TE' | ε
-void EPrime() {
-    //Print to CMD Line
-    if (printSwitch) {
-        cout << "<Expression Prime> -> + <Term> <Expression Prime> | - <Term> <Expression Prime> | ε" << endl;
-     }
-    
-    //write to file
-    //outputFile << "<Expression Prime> -> + <Term> <Expression Prime> | - <Term> <Expression Prime> | ε" << endl;
-    
-    //logic (RULES)
-    if (lexemeVector.at(vIndex) == "+" || lexemeVector.at(vIndex) == "-") {
-        vIndex++;
-        cout << "It's a + or -" << endl;
-        T();
-        EPrime();
-    }
-};
-
-//  T  -> FT'
-void T() {
-    //Print to CMD Line
-    if (printSwitch) {
-        cout << "<Term> -> <Factor> <Term Prime>" << endl;
-    }
-    F();
-    TPrime();
-    //write to file
-    outputFile << "\t<Term> -> <Factor> <Term Prime>" << endl;
-
-};
-
-//  T' -> *FT' | /FT' | ε
-void TPrime() {
-    //Print to CMD Line
-    if (printSwitch) {
-        cout << "<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
-    }
-    if (lexemeVector.at(vIndex) == "*") {
-        vIndex++;
-        cout << "It's a *" << endl;
-        F();
-        TPrime();
-    } else if (lexemeVector.at(vIndex) == "/") {
-        vIndex++;
-        cout << "It's a /" << endl;
-        F();
-        TPrime();
-    } else if (tokenVector[vIndex] == "IDENTIFIER" || tokenVector[vIndex] == "KEYWORD"){
-    }
-    //write to file
-    outputFile << "\t<Term Prime> -> * <Factor> <Term Prime> | / <Factor> <Term Prime> | ε" << endl;
-
-};
-
-//  F -> i | (E)
-void F() {
-    //Print to CMD Line
-    if (printSwitch) {
-        cout << "<Factor> -> i | <Expression> | ε" << endl;
-    }
-    //write to file
-    outputFile << "\t<Factor> -> i | <Expression> | ε" << endl;
-    
-};
-
-//not sure what to do with this yet
-void epsilon () {
-    cout << "ε case" << endl;
-};
-
-
-
-*/
 
 //==========================================================================================
 // TESTING TEMPORARY FUNCTIONS
