@@ -1,6 +1,6 @@
 //USAGE
 //compile with g++ lexer.cpp -olexer
-//run with ./lexer SampleInputFile1.txt
+//run with ./lexer test.txt
 
 #include <iostream>
 #include <fstream>
