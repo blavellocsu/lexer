@@ -30,7 +30,7 @@ int lexer (char theInput, int index);
 
 bool startSymbols();
 void parser();
-bool S();
+bool A();
 bool E();
 bool T();
 bool EPrime();
@@ -311,7 +311,7 @@ bool isOperator (char c) {
 // PARSER FUNCTIONS
 //
 // RULES:
-//        S  -> i = E
+//        A  -> i = E
 //        E  -> T E'
 //        E' -> +TE' | -TE' | ε
 //        T  -> FT'
@@ -329,9 +329,9 @@ void parser() {
         start += 2;
     }
     
-    //loop through vector 
+    //loop through vector
     for(vIndex = 0 + start; vIndex < lexemeVector.size()-1; vIndex++) {
-        if( !S() ) {
+        if( !A() ) {
             cout << "CODE INVALID\n";
             valid = false;
             break;
@@ -340,11 +340,11 @@ void parser() {
     if (valid) cout << "\nCODE VALID\n";
 }
 
-//  S  -> i = E
-bool S() {
+//  A  -> i = E
+bool A() {
     
     printTL();
-    printRule("<Statement> -> <Identifer> = <Expression>");
+    printRule("<Assign> -> <Identifer> = <Expression>");
     
     if (tokenVector.at(vIndex) == "IDENTIFIER") {
         
@@ -353,7 +353,7 @@ bool S() {
         
         if (lexemeVector.at(vIndex) == "=") {
             vIndex++;
-            E();
+            if (!E()) return false;
         } else {
             std::cerr << "Expected =\n";
             return false;
@@ -371,6 +371,11 @@ bool E() {
     printTL();
     printRule("<Expression> -> <Term> <Expression Prime>");
     
+    if (tokenVector.at(vIndex) != "IDENTIFIER") {
+        std::cerr << "Expected identifier\n";
+        return false;
+    }
+    
     T();
     EPrime();
     return true;
@@ -387,9 +392,11 @@ bool EPrime() {
         vIndex++;
         printTL();
         
-        T();
+        if(!T()) return false;
         EPrime();
         return true;
+    } else {
+        epsilon();
     }
     return false;
 };
@@ -398,7 +405,10 @@ bool EPrime() {
 bool T() {
     
     printRule("<Term> -> <Factor> <Term Prime>");
-
+    if(tokenVector.at(vIndex) != "IDENTIFIER") {
+        std::cerr << "Expected identifier\n";
+        return false;
+    }
     F();
     TPrime();
     
@@ -437,7 +447,7 @@ bool F() {
 //not sure what to do with this yet
 void epsilon () {
     //cout << "ε case" << endl;
-    printRule("ε case");
+    printRule("<Empty> -> ε case");
 };
 
 
