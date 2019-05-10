@@ -10,7 +10,8 @@
 #include <list>
 #include <ctype.h>
 #include <sstream>
-#define newCharIterator vector<char>::iterator // just to make the code a little easier to read
+// just to make the code a little easier to read
+#define newCharIterator vector<char>::iterator
 #define SIZE 9999999
 #define newStringIterator vector<string>::iterator
 #define tokenStrPos tokenString[currentIndex]
@@ -30,12 +31,17 @@ int lexer (char theInput, int index);
 
 bool startSymbols();
 void parser();
+bool S();
+bool C();
 bool A();
 bool E();
 bool T();
 bool EPrime();
 bool TPrime();
 bool F();
+bool If();
+bool Else();
+bool While();
 void epsilon();
 
 void printRule(string rule);
@@ -87,6 +93,8 @@ int main( int argc, const char * argv[] ) {
     removeComments(&tokenString);
     cout << "------------------------" << endl;
     fillLexemeVector();
+    printSVector(&lexemeVector);
+    cout << endl;
     parser();
     cout << "\n" << endl;
     outputFile.close();
@@ -303,52 +311,82 @@ bool isOperator (char c) {
     } else { return false; }
 }//end isOperator
 
-
-
-
-
-//==========================================================================================
+//========================================================================================
 // PARSER FUNCTIONS
 //
 // RULES:
+//        S  -> If | Else | While | A
 //        A  -> i = E
-
 //        E  -> T E'
 //        E' -> +TE' | -TE' | ε
 //        T  -> FT'
 //        T' -> *FT' | /FT' | ε
 //        F -> i | (E)
 //
-//==========================================================================================
-
+//========================================================================================
 
 void parser() {
-    
     //checking to see if code starts with %%
     int start = 0;
     if (startSymbols()) {
         start += 2;
     }
-    
     //loop through vector
     for(vIndex = 0 + start; vIndex < lexemeVector.size()-1; vIndex++) {
-        if( !A() ) {
+        cout << "LOOP" << endl;
+        printTL();
+        if( !S() ) {
             cout << "CODE INVALID\n";
             valid = false;
             break;
         }
     }
+
     if (valid) cout << "\nCODE VALID\n";
-}
+};
+
+//   S  -> If | Else | While | A
+bool S() {
+    printTL();
+    printRule("<Statement> -> <If> | <Else> | <While> | <A>");
+
+    if (tokenVector[vIndex] == "IDENTIFIER"){
+        A();
+        return true;
+    }
+    else if (lexemeVector[vIndex] == "if") {
+        If();
+        return true;
+    }
+    else if (lexemeVector[vIndex] == "while") {
+        While();
+        return true;
+    } else {
+        return false;
+    }
+};
+
+bool C() {
+    printRule("<Condition> -> <Expression> <Relationship Operator> <Expression>");
+    if(!E()) return false;
+    
+    if (lexemeVector[vIndex] == "=="    || lexemeVector[vIndex] == "!="
+        || lexemeVector[vIndex] == "<"  || lexemeVector[vIndex] == ">"
+        || lexemeVector[vIndex] == "<=" || lexemeVector[vIndex] == ">=") {
+        vIndex++;
+    } else return false;
+    
+    if(!E()) return false;
+
+    return true;
+};
 
 //  A  -> i = E
 bool A() {
-    
-    printTL();
+//    printTL();
     printRule("<Assign> -> <Identifer> = <Expression>");
     
     if (tokenVector.at(vIndex) == "IDENTIFIER") {
-        
         vIndex++;
         printTL();
         
@@ -364,7 +402,7 @@ bool A() {
         return false;
     }
     return true;
-}
+};
 
 //  E  -> TE'
 bool E() {
@@ -380,7 +418,7 @@ bool E() {
     T();
     EPrime();
     return true;
-}
+};
 
 //  E' -> +TE' | -TE' | ε
 bool EPrime() {
@@ -397,6 +435,8 @@ bool EPrime() {
         EPrime();
         return true;
     } else {
+        printTL();
+
         epsilon();
     }
     return false;
@@ -445,11 +485,121 @@ bool F() {
     return false;
 };
 
-//not sure what to do with this yet
-void epsilon () {
-    //cout << "ε case" << endl;
-    printRule("<Empty> -> ε case");
+
+bool If() {
+    printRule("<If> -> If ( <Condition ) { <Statement> }");
+    
+    if (lexemeVector.at(vIndex) == "if") {
+        vIndex++;
+        printTL();
+        
+        if (lexemeVector.at(vIndex) == "(") {
+            vIndex++;
+            
+            if (!C()) return false;
+            //vIndex++;
+            
+            if (lexemeVector.at(vIndex) == ")") {
+                vIndex++;
+                printTL();
+
+                if (lexemeVector.at(vIndex) == "{") {
+                    vIndex++;
+                    printTL();
+                    
+                    if ( !S() ) return false;
+                    vIndex++;
+                    
+                    if (lexemeVector.at(vIndex) == "}") {
+                        vIndex++;
+                        Else();
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
 };
+
+
+bool Else() {
+    printTL();
+    printRule("<Else> -> else { <Statement> }");
+
+    if (lexemeVector.at(vIndex) == "else") {
+        vIndex++;
+        printTL();
+        
+        if (lexemeVector.at(vIndex) == "{") {
+            vIndex++;
+            if(!S()) return false;
+            //vIndex++;
+            
+            if (lexemeVector.at(vIndex) == "}") {
+                vIndex++;
+                return true;
+            }
+        }
+    } else {
+        vIndex--;
+        epsilon();
+    }
+    return false;
+};
+
+bool While() {
+    printTL();
+    printRule("<While> -> While ( <Condition> ) { <Statement> }");
+    
+    if (lexemeVector.at(vIndex) == "while") {
+        vIndex++;
+        printTL();
+        
+        if (lexemeVector.at(vIndex) == "(") {
+            vIndex++;
+            printTL();
+
+            if (!C()) return false;
+            //vIndex++;
+            if (lexemeVector.at(vIndex) == ")"){
+                vIndex++;
+                //cout << "TESTING!!!!!!!!!!\n";
+                if (lexemeVector.at(vIndex) == "{") {
+                    printTL();
+                    vIndex++;
+                    if (!S()) return false;
+
+                    vIndex++;
+                    if (lexemeVector.at(vIndex) == "}") return true;
+                }
+            }
+        }
+    }
+    return false;
+};
+
+
+void epsilon () {
+    printRule("<Empty> -> ε case");
+//    if (lexemeVector[vIndex] == ";") {
+//        vIndex++;
+//        cout << "lexeme: " << lexemeVector[vIndex] << endl;
+//    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void printRule(string rule) {
@@ -472,6 +622,7 @@ void printTL(){
     }
 }
 
+
 //Just checking if starting symbols %% or $$ are used to indicate starting.
 //if so, output them and then disregard first 2 elements
 bool startSymbols(){
@@ -489,9 +640,6 @@ bool startSymbols(){
     }
     return false;
 }
-
-
-
 
 //==========================================================================================
 // TESTING TEMPORARY FUNCTIONS
