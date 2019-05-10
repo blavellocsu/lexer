@@ -1,5 +1,5 @@
 # Compiler
- This program is the lexer stage of a compiler.
+ This program is the lexer and syntax analyzer stage of a compiler.
 
 ## Contributors:
 
