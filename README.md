@@ -1,4 +1,4 @@
-# Lexer
+# Compiler
  This program is the lexer stage of a compiler.
 
 ## Contributors:
