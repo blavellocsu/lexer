@@ -31,6 +31,22 @@ To compile the program, use the following command:
 ```bash
 g++ -o lexer lexer.cpp
 ```
+
+Replace <input_file> with the path to the source code file you wish to analyze.
+
+## Contributors
+
+- Brandon Lavello: brandonlavello@csu.fullerton.edu
+- Vincent DeAugustine: vinnied44@csu.fullerton.edu
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+This project was developed as part of an academic assignment at California State University, Fullerton.
+
 ## Contributors:
 
 Brandon Lavello
@@ -38,4 +54,3 @@ brandonlavello@csu.fullerton.edu
 
 Vincent DeAugustine
 vinnied44@csu.fullerton.edu
-a
